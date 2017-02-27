@@ -1,0 +1,36 @@
+{
+  "name": "table3",
+  "version": "0.0.0",
+  "description": "table3 YA-tag that allows to work with tables",
+  "main": "index.js",
+  "scripts": {
+    "prestart": "npm install",
+    "postinstall": "bower install",
+    "start": "gulp --port 9009",
+    "doc": "gulp doc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m3co/table3.git"
+  },
+  "author": "Andres Rios <rianby64@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/m3co/table3/issues"
+  },
+  "homepage": "https://github.com/m3co/table3#readme",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.16.0",
+    "bower": "^1.7.9",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-connect": "^5.0.0",
+    "gulp-csslint": "^1.0.0",
+    "gulp-eslint": "^3.0.1",
+    "gulp-file-include": "^1.0.0",
+    "gulp-htmlhint": "^0.3.1",
+    "gulp-if": "^2.0.2",
+    "gulp-jsdoc3": "^1.0.1",
+    "yargs": "^6.6.0"
+  }
+}

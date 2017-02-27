@@ -1,0 +1,20 @@
+{
+  "name": "table3",
+  "description": "table3 YA-tag that allows to work with tables",
+  "main": "index.js",
+  "authors": [
+    "Andres Rios <rianby64@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/m3co/table3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "handsontable": "^0.31.0"
+  }
+}
