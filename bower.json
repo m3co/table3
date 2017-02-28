@@ -15,6 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "handsontable": "^0.31.0"
+    "d3": "^4.6.0"
   }
 }
