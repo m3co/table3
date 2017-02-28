@@ -14,18 +14,36 @@ var data = [
 ];
 
 var table = d3.select('#example-table');
-var columns = Object.keys(data[0] ? data[0] : {});
+var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
+  return {
+    sort: null,
+    text: c,
+    key: c
+  };
+});
 
 table.select('thead tr').selectAll('th')
   .data(columns)
   .enter()
   .append('th')
-  .text(d => d)
-  .on('click', d =>
-    renderBody(data.sort((a, b) =>
-      Number(a[d]) >= Number(b[d])
-    ))
-  );
+  .text(d => d.text)
+  .on('click', d => {
+    if (!d.sort) d.sort = 'asc';
+    else if (d.sort == 'asc') d.sort = 'desc';
+    else if (d.sort == 'desc') d.sort = null;
+    console.log(d.sort);
+    if (d.sort === 'asc') {
+      renderBody(data.map(d => d).sort((a, b) =>
+        Number(a[d.key]) >= Number(b[d.key])
+      ));
+    } else if (d.sort === 'desc') {
+      renderBody(data.map(d => d).sort((a, b) =>
+        Number(a[d.key]) <= Number(b[d.key])
+      ));
+    } else {
+      renderBody(data.map(d => d));
+    }
+  });
 
 renderBody(data);
 
@@ -37,7 +55,7 @@ function renderBody(data) {
   var td = tr.enter()
     .append('tr')
     .merge(tr).selectAll('td')
-      .data(d => columns.map(c => d[c]));
+      .data(d => columns.map(c => d[c.key]));
 
   td.enter()
     .append('td')
