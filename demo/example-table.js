@@ -20,13 +20,30 @@ table.select('thead tr').selectAll('th')
   .data(columns)
   .enter()
   .append('th')
-  .text(d => d);
+  .text(d => d)
+  .on('click', d => {
+    sort(data.sort((a, b) => {
+      return Number(a[d]) <= Number(b[d]);
+    }));
+  });
 
-table.select('tbody').selectAll('tr')
-  .data(data)
-  .enter()
-  .append('tr').selectAll('td')
-  .data(d => columns.map(c => d[c]))
-  .enter()
-  .append('td')
-  .text(d => d);
+function sort(data) {
+  renderBody(data);
+}
+
+renderBody(data);
+function renderBody(data) {
+  var tr = table.select('tbody')
+    .selectAll('tr')
+    .data(data);
+
+  var td = tr.enter()
+    .append('tr')
+    .merge(tr).selectAll('td')
+      .data(d => columns.map(c => d[c]));
+
+  td.enter()
+    .append('td')
+    .merge(td)
+    .text(d => d);
+}
