@@ -27,16 +27,19 @@ table.select('thead tr').selectAll('th')
   .enter()
   .append('th')
   .text(d => d.text)
-  .on('click', d => {
+  .on('click', (d, i, ths) => {
+    let th = ths[i];
+    ths.forEach(th => th.classList.remove('th--sort-asc', 'th--sort-desc'));
     if (!d.sort) d.sort = 'asc';
     else if (d.sort == 'asc') d.sort = 'desc';
     else if (d.sort == 'desc') d.sort = null;
-    console.log(d.sort);
     if (d.sort === 'asc') {
+      th.classList.add('th--sort-asc');
       renderBody(data.map(d => d).sort((a, b) =>
         Number(a[d.key]) >= Number(b[d.key])
       ));
     } else if (d.sort === 'desc') {
+      th.classList.add('th--sort-desc');
       renderBody(data.map(d => d).sort((a, b) =>
         Number(a[d.key]) <= Number(b[d.key])
       ));
