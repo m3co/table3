@@ -21,17 +21,14 @@ table.select('thead tr').selectAll('th')
   .enter()
   .append('th')
   .text(d => d)
-  .on('click', d => {
-    sort(data.sort((a, b) => {
-      return Number(a[d]) <= Number(b[d]);
-    }));
-  });
-
-function sort(data) {
-  renderBody(data);
-}
+  .on('click', d =>
+    renderBody(data.sort((a, b) =>
+      Number(a[d]) >= Number(b[d])
+    ))
+  );
 
 renderBody(data);
+
 function renderBody(data) {
   var tr = table.select('tbody')
     .selectAll('tr')
