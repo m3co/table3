@@ -26,48 +26,42 @@ function isNumber(n) {
   return isFinite(n) && +n === n;
 }
 
+function prepare(d) {
+  return isNumber(d) ? Number(d) :
+    (!d ? '' : d);
+}
+
 table.select('thead tr').selectAll('th')
   .data(columns)
   .enter()
   .append('th')
   .text(d => d.text)
   .on('click', (d, i, ths) => {
-    ths.forEach(th => th.classList.remove('th--sort-asc', 'th--sort-desc'));
-    if (!d.sort) d.sort = 'asc';
-    else if (d.sort == 'asc') d.sort = 'desc';
-    else if (d.sort == 'desc') d.sort = null;
-
-    let data_ = data.map(d => d);
-    columns.forEach((d, i) => {
-      let th = ths[i];
-      if (d.sort === 'asc') {
-        th.classList.add('th--sort-asc');
-        data_.sort((a, b) => {
-          let a_ = isNumber(a[d.key]) ? Number(a[d.key]) : a[d.key];
-          let b_ = isNumber(b[d.key]) ? Number(b[d.key]) : b[d.key];
-          return d3.ascending(a_, b_);
-        });
-      } else if (d.sort === 'desc') {
-        th.classList.add('th--sort-desc');
-        data_.sort((a, b) => {
-          let a_ = isNumber(a[d.key]) ? Number(a[d.key]) : a[d.key];
-          let b_ = isNumber(b[d.key]) ? Number(b[d.key]) : b[d.key];
-          return d3.descending(a_, b_);
-        });
-      }
-    });
-    renderBody(data_);
-
-    /*
-      renderBody(data.map(d => d).sort((a, b) =>
-        Number(a[d.key]) >= Number(b[d.key])
-      ));
-      renderBody(data.map(d => d).sort((a, b) =>
-        Number(a[d.key]) <= Number(b[d.key])
-      ));
-    } else {
+    if (!d.sort) {
+      d.sort = 'asc';
+      ths[i].classList.add('th--sort-asc');
+    } else if (d.sort == 'asc') {
+      d.sort = 'desc';
+      ths[i].classList.add('th--sort-desc');
+    } else if (d.sort == 'desc') {
+      d.sort = null;
+      ths[i].classList.remove('th--sort-asc');
+      ths[i].classList.remove('th--sort-desc');
     }
-    */
+
+    renderBody(data.map(d => d).sort((a, b) =>
+      columns.reduce((r, d) => {
+        if (r !== 0) return r;
+        if (d.sort == null) return 0;
+        let a_ = prepare(a[d.key]); // this may be in other place
+        let b_ = prepare(b[d.key]); // this may be in other place
+        if (d.sort === 'asc') {
+          return d3.ascending(a_, b_);
+        } else if (d.sort === 'desc') {
+          return d3.descending(a_, b_);
+        }
+      }, 0)
+    ));
   });
 
 renderBody(data);
