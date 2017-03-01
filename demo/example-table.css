@@ -3,17 +3,17 @@ th {
 }
 
 .th--sort-asc:after {
-  content: '';
   border: 3px solid;
   border-color: #000 transparent transparent;
+  content: '';
   display: inline-block;
   margin-left: 3px;
 }
 
 .th--sort-desc:after {
-  content: '';
   border: 3px solid;
   border-color: transparent transparent #000;
+  content: '';
   display: inline-block;
   margin-left: 3px;
   transform: translateY(-3px);

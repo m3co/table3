@@ -22,30 +22,52 @@ var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
   };
 });
 
+function isNumber(n) {
+  return isFinite(n) && +n === n;
+}
+
 table.select('thead tr').selectAll('th')
   .data(columns)
   .enter()
   .append('th')
   .text(d => d.text)
   .on('click', (d, i, ths) => {
-    let th = ths[i];
     ths.forEach(th => th.classList.remove('th--sort-asc', 'th--sort-desc'));
     if (!d.sort) d.sort = 'asc';
     else if (d.sort == 'asc') d.sort = 'desc';
     else if (d.sort == 'desc') d.sort = null;
-    if (d.sort === 'asc') {
-      th.classList.add('th--sort-asc');
+
+    let data_ = data.map(d => d);
+    columns.forEach((d, i) => {
+      let th = ths[i];
+      if (d.sort === 'asc') {
+        th.classList.add('th--sort-asc');
+        data_.sort((a, b) => {
+          let a_ = isNumber(a[d.key]) ? Number(a[d.key]) : a[d.key];
+          let b_ = isNumber(b[d.key]) ? Number(b[d.key]) : b[d.key];
+          return d3.ascending(a_, b_);
+        });
+      } else if (d.sort === 'desc') {
+        th.classList.add('th--sort-desc');
+        data_.sort((a, b) => {
+          let a_ = isNumber(a[d.key]) ? Number(a[d.key]) : a[d.key];
+          let b_ = isNumber(b[d.key]) ? Number(b[d.key]) : b[d.key];
+          return d3.descending(a_, b_);
+        });
+      }
+    });
+    renderBody(data_);
+
+    /*
       renderBody(data.map(d => d).sort((a, b) =>
         Number(a[d.key]) >= Number(b[d.key])
       ));
-    } else if (d.sort === 'desc') {
-      th.classList.add('th--sort-desc');
       renderBody(data.map(d => d).sort((a, b) =>
         Number(a[d.key]) <= Number(b[d.key])
       ));
     } else {
-      renderBody(data.map(d => d));
     }
+    */
   });
 
 renderBody(data);
