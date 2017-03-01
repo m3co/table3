@@ -23,8 +23,8 @@ var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
 });
 
 // filtering
-table.select('#filter').on('change', (d, i, inputs) => {
-  let value = inputs[i].value;
+table.select('#filter').on('keyup', () => {
+  let value = d3.event.target.value;
   table.select('tbody')
     .selectAll('tr')
     .each((d, i, trs) => {
