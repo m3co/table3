@@ -22,15 +22,6 @@ var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
   };
 });
 
-function isNumber(n) {
-  return isFinite(n) && +n === n;
-}
-
-function prepare(d) {
-  return isNumber(d) ? Number(d) :
-    (!d ? '' : d);
-}
-
 table.select('thead tr').selectAll('th')
   .data(columns)
   .enter()
@@ -48,6 +39,9 @@ table.select('thead tr').selectAll('th')
       ths[i].classList.remove('th--sort-asc');
       ths[i].classList.remove('th--sort-desc');
     }
+
+    let isNumber = n => (isFinite(n) && +n === n);
+    let prepare = d => (isNumber(d) ? Number(d) : (!d ? '' : d));
 
     renderBody(data.map(d => d).sort((a, b) =>
       columns.reduce((r, d) => {
