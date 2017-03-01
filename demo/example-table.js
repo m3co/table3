@@ -3,13 +3,14 @@
 var table = d3.select('#example-table');
 fetch('data.json').then(response => response.json()).then(json => {
   var data = json.data;
-  var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
-    return {
-      sort: null,
-      text: c,
-      key: c
-    };
-  });
+  var columns = Object.keys(data[0].attributes ? data[0].attributes : {})
+    .map(c => {
+      return {
+        sort: null,
+        text: c,
+        key: c
+      };
+    });
 
   // filtering
   table.select('#filter').on('keyup', () => {
@@ -47,18 +48,19 @@ fetch('data.json').then(response => response.json()).then(json => {
       let isNumber = n => (isFinite(n) && +n === n);
       let prepare = d => (isNumber(d) ? Number(d) : (!d ? '' : d));
 
-      renderBody(data.map(d => d).sort((a, b) =>
-        columns.reduce((r, d) => {
+      renderBody(data.map(d => d).sort((a, b) => {
+        return columns.reduce((r, d) => {
           if (r !== 0) return r;
           if (d.sort == null) return 0;
-          let a_ = prepare(a[d.key]); // this may be in other place
-          let b_ = prepare(b[d.key]); // this may be in other place
+          let a_ = prepare(a.attributes[d.key]); // this may be in other place
+          let b_ = prepare(b.attributes[d.key]); // this may be in other place
           if (d.sort === 'asc') {
             return d3.ascending(a_, b_);
           } else if (d.sort === 'desc') {
             return d3.descending(a_, b_);
           }
         }, 0)
+      }
       ));
     });
 
@@ -72,7 +74,7 @@ fetch('data.json').then(response => response.json()).then(json => {
     var td = tr.enter()
       .append('tr')
       .merge(tr).selectAll('td')
-      .data(d => columns.map(c => d[c.key]));
+      .data(d => columns.map(c => d.attributes[c.key]));
 
     td.enter()
       .append('td')
