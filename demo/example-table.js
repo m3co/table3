@@ -1,8 +1,8 @@
 'use strict';
 
 var table = d3.select('#example-table');
-fetch('data.json').then(response => response.json()).then(data => {
-
+fetch('data.json').then(response => response.json()).then(json => {
+var data = json.data;
 var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
   return {
     sort: null,
