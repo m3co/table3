@@ -22,6 +22,21 @@ var columns = Object.keys(data[0] ? data[0] : {}).map(c => {
   };
 });
 
+// filtering
+table.select('#filter').on('change', (d, i, inputs) => {
+  let value = inputs[i].value;
+  table.select('tbody')
+    .selectAll('tr')
+    .each((d, i, trs) => {
+      let tr = trs[i];
+      if (value === '')
+        tr.hidden = false;
+      else if (tr.textContent.indexOf(value) === -1)
+        tr.hidden = true;
+    });
+});
+
+// sorting
 table.select('thead tr').selectAll('th')
   .data(columns)
   .enter()
