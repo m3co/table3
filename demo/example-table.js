@@ -4,13 +4,12 @@ var table = d3.select('#example-table');
 fetch('data.json').then(response => response.json()).then(json => {
   var data = json.data;
   var columns = Object.keys(data[0].attributes ? data[0].attributes : {})
-    .map(c => {
-      return {
+    .map(c => Object({
         sort: null,
         text: c,
         key: c
-      };
-    });
+      })
+    );
 
   // filtering
   table.select('#filter').on('keyup', () => {
@@ -19,10 +18,11 @@ fetch('data.json').then(response => response.json()).then(json => {
     .selectAll('tr')
     .each((d, i, trs) => {
       let tr = trs[i];
-      if (value === '')
-      tr.hidden = false;
-      else if (tr.textContent.indexOf(value) === -1)
-      tr.hidden = true;
+      if (value === '') {
+        tr.hidden = false;
+      } else if (tr.textContent.indexOf(value) === -1) {
+        tr.hidden = true;
+      }
     });
   });
 
@@ -45,15 +45,12 @@ fetch('data.json').then(response => response.json()).then(json => {
         ths[i].classList.remove('th--sort-desc');
       }
 
-      let isNumber = n => (isFinite(n) && +n === n);
-      let prepare = d => (isNumber(d) ? Number(d) : (!d ? '' : d));
-
       renderBody(data.map(d => d).sort((a, b) => {
         return columns.reduce((r, d) => {
           if (r !== 0) return r;
           if (d.sort == null) return 0;
-          let a_ = prepare(a.attributes[d.key]); // this may be in other place
-          let b_ = prepare(b.attributes[d.key]); // this may be in other place
+          let a_ = a.attributes[d.key];
+          let b_ = b.attributes[d.key];
           if (d.sort === 'asc') {
             return d3.ascending(a_, b_);
           } else if (d.sort === 'desc') {
