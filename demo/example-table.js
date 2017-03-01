@@ -45,8 +45,8 @@ fetch('data.json').then(response => response.json()).then(json => {
         ths[i].classList.remove('th--sort-desc');
       }
 
-      renderBody(data.map(d => d).sort((a, b) => {
-        return columns.reduce((r, d) => {
+      renderBody(data.map(d => d).sort((a, b) =>
+        columns.reduce((r, d) => {
           if (r !== 0) return r;
           if (d.sort == null) return 0;
           let a_ = a.attributes[d.key];
@@ -57,7 +57,6 @@ fetch('data.json').then(response => response.json()).then(json => {
             return d3.descending(a_, b_);
           }
         }, 0)
-      }
       ));
     });
 
