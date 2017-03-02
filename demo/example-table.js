@@ -37,10 +37,10 @@ fetch('data.json').then(response => response.json()).then(json => {
       if (!d.sort) {
         d.sort = 'asc';
         ths[i].classList.add('th--sort-asc');
-      } else if (d.sort == 'asc') {
+      } else if (d.sort === 'asc') {
         d.sort = 'desc';
         ths[i].classList.add('th--sort-desc');
-      } else if (d.sort == 'desc') {
+      } else if (d.sort === 'desc') {
         d.sort = null;
         ths[i].classList.remove('th--sort-asc');
         ths[i].classList.remove('th--sort-desc');
@@ -49,7 +49,7 @@ fetch('data.json').then(response => response.json()).then(json => {
       renderBody(data.map(d => d).sort((a, b) =>
         columns.reduce((r, d) => {
           if (r !== 0) return r;
-          if (d.sort == null) return 0;
+          if (d.sort === null) return 0;
           let a_ = a.attributes[d.key];
           let b_ = b.attributes[d.key];
           if (d.sort === 'asc') {
