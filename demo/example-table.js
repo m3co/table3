@@ -1,7 +1,7 @@
 (() => {
 'use strict';
-console.log(document.currentScript || document._currentScript);
-var table = d3.select('#example-table');
+;
+var table = d3.select(document.currentFragment.querySelector('table'));
 fetch('data.json').then(response => response.json()).then(json => {
   var data = json.data;
   var columns = Object.keys(data[0].attributes ? data[0].attributes : {})

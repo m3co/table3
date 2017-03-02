@@ -16,6 +16,6 @@
   ],
   "dependencies": {
     "d3": "^4.6.0",
-    "pseudoimport-html": "^1.2.0"
+    "pseudoimport-html": "^1.2.1"
   }
 }
