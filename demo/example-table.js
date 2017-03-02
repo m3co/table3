@@ -2,12 +2,14 @@
 'use strict';
 
 var currentFragment = document.currentFragment;
+
+var filter = currentFragment.dataset.filter;
 var sort = currentFragment.dataset.sort.split(',')
   .filter(d => d)
   .map(d => {
     let v = {
       attribute: d,
-    sort: 'asc'
+      sort: 'asc'
     };
     if (v.attribute[0] === '-') {
       v.attribute = v.attribute.slice(1);
@@ -15,16 +17,13 @@ var sort = currentFragment.dataset.sort.split(',')
     }
     return v;
   });
-var filter = currentFragment.dataset.filter;
-var url = currentFragment.dataset.url;
 
 var table = d3.select(currentFragment.querySelector('table'));
 var inputFilter = currentFragment.querySelector('#filter');
 inputFilter.value = filter;
 
-fetch(url)
-  .then(response => response.json())
-  .then(json => {
+currentFragment.render = render;
+function render(json) {
   var data = json.data;
   var columns = Object.keys(data[0].attributes ? data[0].attributes : {})
     .map(c => {
@@ -102,6 +101,6 @@ fetch(url)
       .merge(td)
       .text(d => d);
   }
+}
 
-});
 })();

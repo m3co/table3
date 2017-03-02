@@ -10,9 +10,13 @@
   </head>
   <body>
     <x-fragment
-      src="example-table.html"
-      data-sort="gender,-col"
-      data-filter="o"
+      id="fetcher"
+      src="fetcher.html"
       data-url="data.json"></x-fragment>
+    <x-fragment
+      src="example-table.html"
+      data-from="fetcher"
+      data-sort="gender,-col"
+      data-filter="o"></x-fragment>
   </body>
 </html>
