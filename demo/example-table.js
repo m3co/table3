@@ -50,8 +50,8 @@ fetch('data.json').then(response => response.json()).then(json => {
         columns.reduce((r, d) => {
           if (r !== 0) return r;
           if (d.sort === null) return 0;
-          let a_ = a.attributes[d.key];
-          let b_ = b.attributes[d.key];
+          let a_ = a.attributes[d.key] || '';
+          let b_ = b.attributes[d.key] || '';
           if (d.sort === 'asc') {
             return d3.ascending(a_, b_);
           } else if (d.sort === 'desc') {
