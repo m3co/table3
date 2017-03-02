@@ -1,6 +1,6 @@
 (() => {
 'use strict';
-;
+
 var table = d3.select(document.currentFragment.querySelector('table'));
 fetch('data.json').then(response => response.json()).then(json => {
   var data = json.data;
