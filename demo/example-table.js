@@ -2,18 +2,39 @@
 'use strict';
 
 var currentFragment = document.currentFragment;
+var sort = currentFragment.dataset.sort.split(',')
+  .filter(d => d)
+  .map(d => {
+    let v = {
+      attribute: d,
+    sort: 'asc'
+    };
+    if (v.attribute[0] === '-') {
+      v.attribute = v.attribute.slice(1);
+      v.sort = 'desc';
+    }
+    return v;
+  });
+var filter = currentFragment.dataset.filter;
+var url = currentFragment.dataset.url;
+
 var table = d3.select(currentFragment.querySelector('table'));
-fetch(currentFragment.getAttribute('data-url'))
+var inputFilter = currentFragment.querySelector('#filter');
+inputFilter.value = filter;
+
+fetch(url)
   .then(response => response.json())
   .then(json => {
   var data = json.data;
   var columns = Object.keys(data[0].attributes ? data[0].attributes : {})
-    .map(c => Object({
-        sort: null,
+    .map(c => {
+      let sort_ = sort.find(d => d.attribute === c);
+      return {
+        sort: sort_ ? sort_.sort : undefined,
         text: c,
         key: c
-      })
-    );
+      };
+    });
 
   // filtering
   table.select('#filter').on('keyup', () => {
@@ -45,14 +66,14 @@ fetch(currentFragment.getAttribute('data-url'))
         ths[i].classList.remove('th--sort-asc');
         ths[i].classList.add('th--sort-desc');
       } else if (d.sort === 'desc') {
-        d.sort = null;
+        d.sort = undefined;
         ths[i].classList.remove('th--sort-desc');
       }
 
       renderBody(data.map(d => d).sort((a, b) =>
         columns.reduce((r, d) => {
           if (r !== 0) return r;
-          if (d.sort === null) return 0;
+          if (d.sort === undefined) return 0;
           let a_ = a.attributes[d.key] || '';
           let b_ = b.attributes[d.key] || '';
           if (d.sort === 'asc') {
