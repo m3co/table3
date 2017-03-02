@@ -1,5 +1,6 @@
+(() => {
 'use strict';
-
+console.log(document.currentScript || document._currentScript);
 var table = d3.select('#example-table');
 fetch('data.json').then(response => response.json()).then(json => {
   var data = json.data;
@@ -79,3 +80,4 @@ fetch('data.json').then(response => response.json()).then(json => {
   }
 
 });
+})();

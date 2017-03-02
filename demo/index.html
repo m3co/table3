@@ -2,28 +2,13 @@
 <html>
   <head>
     <title>Demo</title>
+    <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="/bower_components/pseudoimport-html/fragment-wc.js"></script>
     <script src="/bower_components/d3/d3.min.js"></script>
-    <link href="example-table.css" rel="stylesheet">
   </head>
   <body>
-    <table id="example-table">
-      <caption>
-        <input type="text" placeholder="Filter" id="filter">
-        <!--
-        This is a demo for furture features... Just leave it in, just in case
-        <input type="text" list="filter" placeholder="Filter">
-        <datalist id="filter">
-          <option value="function">function</option>
-          <option value="async function">async function</option>
-          <option value="function*">generator function</option>
-          <option value="=>">arrow function</option>
-          <option value="async =>">async arrow function</option>
-          <option value="async function*">async generator function</option>
-        </datalist>-->
-      </caption>
-      <thead><tr></tr></thead>
-      <tbody></tbody>
-    </table>
-    <script src="example-table.js"></script>
+    <x-fragment
+      src="example-table.html"
+      data-url="data.json"></x-fragment>
   </body>
 </html>
