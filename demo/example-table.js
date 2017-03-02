@@ -3,7 +3,9 @@
 
 var currentFragment = document.currentFragment;
 var table = d3.select(currentFragment.querySelector('table'));
-fetch(currentFragment.getAttribute('data-url')).then(response => response.json()).then(json => {
+fetch(currentFragment.getAttribute('data-url'))
+  .then(response => response.json())
+  .then(json => {
   var data = json.data;
   var columns = Object.keys(data[0].attributes ? data[0].attributes : {})
     .map(c => Object({
