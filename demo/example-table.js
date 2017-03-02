@@ -39,10 +39,10 @@ fetch('data.json').then(response => response.json()).then(json => {
         ths[i].classList.add('th--sort-asc');
       } else if (d.sort === 'asc') {
         d.sort = 'desc';
+        ths[i].classList.remove('th--sort-asc');
         ths[i].classList.add('th--sort-desc');
       } else if (d.sort === 'desc') {
         d.sort = null;
-        ths[i].classList.remove('th--sort-asc');
         ths[i].classList.remove('th--sort-desc');
       }
 
