@@ -1,127 +1,138 @@
 {
-  "data": [{
-    "id":1,
-    "type": "Person",
-    "attributes": {
-      "name":"Oli Bob \n steve",
-      "age":"12",
-      "gender":"male",
-      "height":1,
-      "col":"red",
-      "dob":"",
-      "cheese":1,
-      "lucky_no":5
+  "data": [
+    {
+      "id": 1,
+      "type": "Person",
+      "attributes": {
+        "name": "Oli Bob \n steve",
+        "age": "12",
+        "gender": "male",
+        "height": 1,
+        "col": "red",
+        "dob": "",
+        "cheese": 1,
+        "lucky_no": 5
+      }
+    },
+    {
+      "id": 2,
+      "type": "Person",
+      "attributes": {
+        "name": "Mary May",
+        "age": "1",
+        "gender": "female",
+        "height": 2,
+        "col": "blue",
+        "dob": "14/05/1982",
+        "cheese": true,
+        "lucky_no": 10
+      }
+    },
+    {
+      "id": 3,
+      "type": "Person",
+      "attributes": {
+        "name": "Christine Lobowski",
+        "age": "42",
+        "height": 0,
+        "col": "green",
+        "dob": "22/05/1982",
+        "cheese": "true",
+        "lucky_no": 12
+      }
+    },
+    {
+      "id": 4,
+      "type": "Person",
+      "attributes": {
+        "name": "Brendon Philips",
+        "age": "125",
+        "gender": "male",
+        "height": 1,
+        "col": "orange",
+        "dob": "01/08/1980",
+        "lucky_no": 18
+      }
+    },
+    {
+      "id": 5,
+      "type": "Person",
+      "attributes": {
+        "name": "Margret Marmajuke",
+        "age": "16",
+        "gender": "female",
+        "height": 5,
+        "col": "yellow",
+        "dob": "31/01/1999",
+        "lucky_no": 33
+      }
+    },
+    {
+      "id": 6,
+      "type": "Person",
+      "attributes": {
+        "name": "Frank Harbours",
+        "age": "38",
+        "gender": "male",
+        "height": 4,
+        "col": "red",
+        "dob": "",
+        "cheese": 1,
+        "lucky_no": 2
+      }
+    },
+    {
+      "id": 7,
+      "type": "Person",
+      "attributes": {
+        "name": "Jamie Newhart",
+        "age": "23",
+        "gender": "male",
+        "height": 3,
+        "col": "green",
+        "dob": "14/05/1985",
+        "cheese": true,
+        "lucky_no": 63
+      }
+    },
+    {
+      "id": 8,
+      "type": "Person",
+      "attributes": {
+        "name": "Gemma Jane",
+        "age": "60",
+        "height": 0,
+        "col": "red",
+        "dob": "22/05/1982",
+        "cheese": "true",
+        "lucky_no": 72
+      }
+    },
+    {
+      "id": 9,
+      "type": "Person",
+      "attributes": {
+        "name": "Emily Sykes",
+        "age": "42",
+        "gender": "female",
+        "height": 1,
+        "col": "maroon",
+        "dob": "11/11/1970",
+        "lucky_no": 44
+      }
+    },
+    {
+      "id": 10,
+      "type": "Person",
+      "attributes": {
+        "name": "James Newman",
+        "age": "73",
+        "gender": "male",
+        "height": 5,
+        "col": "red",
+        "dob": "22/03/1998",
+        "lucky_no": 9
+      }
     }
-  }, {
-    "id":2,
-    "type": "Person",
-    "attributes": {
-      "name":"Mary May",
-      "age":"1",
-      "gender":"female",
-      "height":2,
-      "col":"blue",
-      "dob":"14/05/1982",
-      "cheese":true,
-      "lucky_no":10
-    }
-  }, {
-    "id":3,
-    "type": "Person",
-    "attributes": {
-      "name":"Christine Lobowski",
-      "age":"42",
-      "height":0,
-      "col":"green",
-      "dob":"22/05/1982",
-      "cheese":"true",
-      "lucky_no":12
-    }
-  }, {
-    "id":4,
-    "type": "Person",
-    "attributes": {
-      "name":"Brendon Philips",
-      "age":"125",
-      "gender":"male",
-      "height":1,
-      "col":"orange",
-      "dob":"01/08/1980",
-      "lucky_no":18
-    }
-  }, {
-    "id":5,
-    "type": "Person",
-    "attributes": {
-      "name":"Margret Marmajuke",
-      "age":"16",
-      "gender":"female",
-      "height":5,
-      "col":"yellow",
-      "dob":"31/01/1999",
-      "lucky_no":33
-    }
-  }, {
-    "id":6,
-    "type": "Person",
-    "attributes": {
-      "name":"Frank Harbours",
-      "age":"38",
-      "gender":"male",
-      "height":4,
-      "col":"red",
-      "dob":"",
-      "cheese":1,
-      "lucky_no":2
-    }
-  }, {
-    "id":7,
-    "type": "Person",
-    "attributes": {
-      "name":"Jamie Newhart",
-      "age":"23",
-      "gender":"male",
-      "height":3,
-      "col":"green",
-      "dob":"14/05/1985",
-      "cheese":true,
-      "lucky_no":63
-    }
-  }, {
-    "id":8,
-    "type": "Person",
-    "attributes": {
-      "name":"Gemma Jane",
-      "age":"60",
-      "height":0,
-      "col":"red",
-      "dob":"22/05/1982",
-      "cheese":"true",
-      "lucky_no":72
-    }
-  }, {
-    "id":9,
-    "type": "Person",
-    "attributes": {
-      "name":"Emily Sykes",
-      "age":"42",
-      "gender":"female",
-      "height":1,
-      "col":"maroon",
-      "dob":"11/11/1970",
-      "lucky_no":44
-    }
-  }, {
-    "id":10,
-    "type": "Person",
-    "attributes": {
-      "name":"James Newman",
-      "age":"73",
-      "gender":"male",
-      "height":5,
-      "col":"red",
-      "dob":"22/03/1998",
-      "lucky_no":9
-    }
-  }]
+  ]
 }
