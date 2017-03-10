@@ -1,10 +1,7 @@
-(() => {
 'use strict';
-
-var currentFragment = document.currentFragment;
-
-var filter = currentFragment.dataset.filter;
-var sort = currentFragment.dataset.sort.split(',')
+document.currentFragment.loaded.then(fragment => {
+var filter = fragment.dataset.filter;
+var sort = fragment.dataset.sort.split(',')
   .filter(d => d)
   .map(d => {
     let v = {
@@ -18,11 +15,11 @@ var sort = currentFragment.dataset.sort.split(',')
     return v;
   });
 
-var table = d3.select(currentFragment.querySelector('table'));
-var inputFilter = currentFragment.querySelector('#filter');
+var table = d3.select(fragment.querySelector('table'));
+var inputFilter = fragment.querySelector('#filter');
 inputFilter.value = filter;
 
-currentFragment.render = render;
+fragment.render = render;
 function render(json) {
   var data = json.data;
   var columns = Object.keys(data[0].attributes ? data[0].attributes : {})
@@ -102,5 +99,4 @@ function render(json) {
       .text(d => d);
   }
 }
-
-})();
+});
