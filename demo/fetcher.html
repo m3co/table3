@@ -1,11 +1,2 @@
 <!doctype html>
-<script>
-  'use strict';
-  var currentFragment = document.currentFragment;
-  var url = currentFragment.dataset.url;
-  fetch(url)
-    .then(response => response.json())
-    .then(json => {
-      document.querySelector('[data-from="fetcher"]').render(json);
-    });
-</script>
+<script src="fetcher.js"></script>
