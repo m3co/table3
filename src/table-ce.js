@@ -16,8 +16,6 @@
       Object.defineProperty(this, 'columns', {
         get: () => columns_,
         set: (columns) => {
-          // It's not in D3 flavour...
-          var tr = thead.querySelector('tr');
           var ths = d3.select(thead)
             .selectAll('th')
             .data(columns);
