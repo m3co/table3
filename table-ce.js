@@ -8,14 +8,15 @@
       // It's not in D3 flavour...
       var table = document.createElement('table');
       var thead = table.querySelector('thead');
-      if (!thead) {
-        thead = table.appendChild(document.createElement('thead'));
-      }
+      var tbody = table.querySelector('tbody');
+      (!thead) && (thead = table.appendChild(document.createElement('thead')));
+      (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
       var columns_ = [];
       Object.defineProperty(this, 'columns', {
         get: () => columns_,
         set: (columns) => {
+          // It's not in D3 flavour...
           thead.innerHTML = '<tr></tr>';
           var tr = thead.querySelector('tr');
           columns_ = [...columns].map(d => {
@@ -26,6 +27,26 @@
           });
         }
       });
+
+      var data_ = [];
+      Object.defineProperty(this, 'data', {
+        get: () => data_,
+        set: (data) => {
+          // It's not in D3 flavour...
+          tbody.innerHTML = '';
+          data_ = [...data].map(d => {
+            var tr = document.createElement('tr');
+            tbody.appendChild(tr);
+            return d.map(d => {
+              var td = document.createElement('td');
+              td.textContent = d;
+              tr.appendChild(td);
+              return d;
+            });
+          });
+        }
+      });
+
       this._table = table;
     }
 
