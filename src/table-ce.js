@@ -17,14 +17,21 @@
         get: () => columns_,
         set: (columns) => {
           // It's not in D3 flavour...
-          thead.innerHTML = '<tr></tr>';
           var tr = thead.querySelector('tr');
-          columns_ = [...columns].map(d => {
-            var th = document.createElement('th');
-            th.textContent = d;
-            tr.appendChild(th);
-            return d;
-          });
+          var ths = d3.select(thead)
+            .selectAll('th')
+            .data(columns);
+
+          ths.text(d => d);
+
+          ths.enter()
+            .append('th')
+            .text(d => d);
+
+          ths.exit()
+            .remove();
+
+          columns_ = columns;
         }
       });
 

@@ -8,6 +8,13 @@ test(() => {
 }, "Table3 element has a defined API");
 
 test(() => {
+  function verify(table3) {
+    assert_equals(table3.querySelectorAll('th').length, table3.columns.length);
+    [...table3.querySelectorAll('th')].forEach((th, i) => {
+      assert_equals(th.textContent, table3.columns[i]);
+    });
+  }
+
   // [SETUP]
   var table3 = document.createElement('x-table');
 
@@ -29,14 +36,10 @@ test(() => {
   document.body.appendChild(table3);
 
   // [VERIFY]
-  [...table3.querySelectorAll('th')].forEach((th, i) => {
-    assert_equals(th.textContent, table3.columns[i]);
-  });
+  verify(table3);
 
   table3.columns = ['New title 1', 'New title 2'];
-  [...table3.querySelectorAll('th')].forEach((th, i) => {
-    assert_equals(th.textContent, table3.columns[i]);
-  });
+  verify(table3);
 
   // [TEARDOWN]
   document.body.removeChild(table3);
