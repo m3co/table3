@@ -33,7 +33,7 @@
       });
 
       Object.defineProperty(this, 'data', {
-        get: () => [...tbody.querySelectorAll('tr')]
+        get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
             .map(tr => [...tr.querySelectorAll('td')]
               .map(td => td.textContent)),
         set: (data) => {
@@ -59,6 +59,21 @@
 
           td.exit()
             .remove();
+        }
+      });
+
+      var filter_ = "";
+      Object.defineProperty(this, 'filter', {
+        get: () => filter_,
+        set: (filter) => {
+          var filter_ = filter.toLowerCase();
+          d3.select(tbody).selectAll('tr')
+            .each((d, i, trs) => {
+              let includes = d.join().toLowerCase().includes(filter_);
+              includes && (trs[i].hidden = false);
+              !includes && (trs[i].hidden = true);
+            });
+          filter_ = filter;
         }
       });
 

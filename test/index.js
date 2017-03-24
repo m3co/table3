@@ -3,9 +3,10 @@ test(() => {
 
   var table3 = document.createElement('x-table');
 
-  assert_true(table3.columns instanceof Array, "columns is present");
-  assert_true(table3.data instanceof Array, "data is present");
-}, "Table3 element has a defined API");
+  assert_true(table3.columns instanceof Array, 'columns is present');
+  assert_true(table3.data instanceof Array, 'data is present');
+  assert_true(table3.hasOwnProperty('filter'), 'filter is present');
+}, 'Table3 element has a defined API');
 
 test(() => {
   function verify(table3) {
@@ -18,15 +19,15 @@ test(() => {
   // [SETUP]
   var table3 = document.createElement('x-table');
 
-  // First variant that defines the "columns"
+  // First variant that defines the 'columns'
   table3.columns = ['Title 1', 'Title 2', 'Title 3'];
 
-  // Second variant that defines the "columns"
+  // Second variant that defines the 'columns'
   /*
   table3.columns = [
-    { title: "Title 1" },
-    { title: "Title 2" },
-    { title: "Title 3" }
+    { title: 'Title 1' },
+    { title: 'Title 2' },
+    { title: 'Title 3' }
   ];
   */
 
@@ -46,7 +47,7 @@ test(() => {
 
   // [TEARDOWN]
   document.body.removeChild(table3);
-}, "Render columns");
+}, 'Render columns');
 
 test(() => {
 
@@ -91,4 +92,25 @@ test(() => {
   // [TEARDOWN]
   document.body.removeChild(table3);
 
-}, "Render data");
+}, 'Render data');
+
+promise_test(function() {
+  return fetch('fixture1.json').then(response => response.json()).then(json => {
+    // [SETUP]
+    var table3 = document.createElement('x-table');
+
+    table3.columns = json.cols;
+    table3.data = json.data;
+    table3.filter = 'Leo';
+
+    // [RUN]
+    document.body.appendChild(table3);
+
+    // [VERIFY]
+    var filtred = [...table3.querySelectorAll('tr:not([hidden])')];
+    assert_equals(filtred.length, 3);
+
+    // [TEARDOWN]
+    document.body.removeChild(table3);
+  });
+}, 'Filter data');
