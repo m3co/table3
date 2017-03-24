@@ -12,9 +12,9 @@
       (!thead) && (thead = table.appendChild(document.createElement('thead')));
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
-      var columns_ = [];
       Object.defineProperty(this, 'columns', {
-        get: () => columns_,
+        get: () => [...thead.querySelectorAll('th')]
+            .map(th => th.textContent),
         set: (columns) => {
           var th = d3.select(thead)
             .selectAll('th')
@@ -29,14 +29,13 @@
 
           th.exit()
             .remove();
-
-          columns_ = columns;
         }
       });
 
-      var data_ = [];
       Object.defineProperty(this, 'data', {
-        get: () => data_,
+        get: () => [...tbody.querySelectorAll('tr')]
+            .map(tr => [...tr.querySelectorAll('td')]
+              .map(td => td.textContent)),
         set: (data) => {
           var tr = d3.select(tbody)
             .selectAll('tr')
@@ -60,8 +59,6 @@
 
           td.exit()
             .remove();
-
-          data_ = data;
         }
       });
 
