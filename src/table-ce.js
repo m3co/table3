@@ -16,17 +16,18 @@
       Object.defineProperty(this, 'columns', {
         get: () => columns_,
         set: (columns) => {
-          var ths = d3.select(thead)
+          var th = d3.select(thead)
             .selectAll('th')
             .data(columns);
 
-          ths.text(d => d);
+          th.text(d => d);
 
-          ths.enter()
+          th.enter()
             .append('th')
+            .merge(th)
             .text(d => d);
 
-          ths.exit()
+          th.exit()
             .remove();
 
           columns_ = columns;
