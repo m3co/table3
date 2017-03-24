@@ -80,6 +80,11 @@ test(() => {
   // [VERIFY]
   verify(table3);
 
+  // [SETUP RUN]
+  table3.data = [[21, 22], [24, 25]];
+  // [VERIFY]
+  verify(table3);
+
   // [TEARDOWN]
   document.body.removeChild(table3);
 

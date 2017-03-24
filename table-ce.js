@@ -16,17 +16,18 @@
       Object.defineProperty(this, 'columns', {
         get: () => columns_,
         set: (columns) => {
-          var ths = d3.select(thead)
+          var th = d3.select(thead)
             .selectAll('th')
             .data(columns);
 
-          ths.text(d => d);
+          th.text(d => d);
 
-          ths.enter()
+          th.enter()
             .append('th')
+            .merge(th)
             .text(d => d);
 
-          ths.exit()
+          th.exit()
             .remove();
 
           columns_ = columns;
@@ -37,18 +38,30 @@
       Object.defineProperty(this, 'data', {
         get: () => data_,
         set: (data) => {
-          // It's not in D3 flavour...
-          tbody.innerHTML = '';
-          data_ = [...data].map(d => {
-            var tr = document.createElement('tr');
-            tbody.appendChild(tr);
-            return d.map(d => {
-              var td = document.createElement('td');
-              td.textContent = d;
-              tr.appendChild(td);
-              return d;
-            });
-          });
+          var tr = d3.select(tbody)
+            .selectAll('tr')
+            .data(data);
+
+          var td = tr.enter()
+            .append('tr')
+            .merge(tr)
+            .selectAll('td')
+            .data(d => d)
+
+          tr.exit()
+            .remove();
+
+          td.text(d => d);
+
+          td.enter()
+            .append('td')
+            .merge(td)
+            .text(d => d);
+
+          td.exit()
+            .remove();
+
+          data_ = data;
         }
       });
 
