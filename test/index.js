@@ -41,6 +41,9 @@ test(() => {
   table3.columns = ['New title 1', 'New title 2'];
   verify(table3);
 
+  table3.columns = ['A New title 1', 'A New title 2', 'A New title 3'];
+  verify(table3);
+
   // [TEARDOWN]
   document.body.removeChild(table3);
 }, "Render columns");
