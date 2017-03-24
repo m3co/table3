@@ -3,16 +3,16 @@ test(() => {
 
   var table3 = document.createElement('x-table');
 
-  assert_true(table3.columns instanceof Array, 'columns is present');
+  assert_true(table3.columns instanceof Set, 'columns is present');
   assert_true(table3.data instanceof Array, 'data is present');
   assert_true(table3.hasOwnProperty('filter'), 'filter is present');
 }, 'Table3 element has a defined API');
 
 test(() => {
   function verify(table3) {
-    assert_equals(table3.querySelectorAll('th').length, table3.columns.length);
+    assert_equals(table3.querySelectorAll('th').length, [...table3.columns].length);
     [...table3.querySelectorAll('th')].forEach((th, i) => {
-      assert_equals(th.textContent, table3.columns[i]);
+      assert_equals(th.textContent, [...table3.columns][i]);
     });
   }
 
@@ -114,3 +114,14 @@ promise_test(function() {
     document.body.removeChild(table3);
   });
 }, 'Filter data');
+
+promise_test(function() {
+  return fetch('fixture1.json').then(response => response.json()).then(json => {
+    var table3 = document.createElement('x-table');
+
+    table3.columns = json.cols;
+    table3.data = json.data;
+
+    document.body.appendChild(table3);
+  });
+}, 'Sort data');

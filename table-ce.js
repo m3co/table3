@@ -13,12 +13,12 @@
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
       Object.defineProperty(this, 'columns', {
-        get: () => [...thead.querySelectorAll('th')]
-            .map(th => th.textContent),
+        get: () => new Set([...thead.querySelectorAll('th')]
+            .map(th => th.textContent)),
         set: (columns) => {
           var th = d3.select(thead)
             .selectAll('th')
-            .data(columns);
+            .data([...new Set(columns)]); // a bit weird...
 
           th.text(d => d);
 
@@ -45,7 +45,7 @@
             .append('tr')
             .merge(tr)
             .selectAll('td')
-            .data(d => d)
+            .data(d => d);
 
           tr.exit()
             .remove();
@@ -62,7 +62,7 @@
         }
       });
 
-      var filter_ = "";
+      var filter_ = '';
       Object.defineProperty(this, 'filter', {
         get: () => filter_,
         set: (filter) => {

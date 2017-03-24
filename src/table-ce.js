@@ -13,12 +13,12 @@
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
       Object.defineProperty(this, 'columns', {
-        get: () => [...thead.querySelectorAll('th')]
-            .map(th => th.textContent),
+        get: () => new Set([...thead.querySelectorAll('th')]
+            .map(th => th.textContent)),
         set: (columns) => {
           var th = d3.select(thead)
             .selectAll('th')
-            .data(columns);
+            .data([...new Set(columns)]); // a bit weird...
 
           th.text(d => d);
 
