@@ -44,6 +44,19 @@ test(() => {
 
 test(() => {
 
+  function verify(table3) {
+    assert_equals(table3.querySelectorAll('tbody > tr').length,
+      table3.data.length);
+    [...table3.querySelectorAll('tbody > tr')].forEach((tr, i) => {
+      assert_equals(tr.querySelectorAll('td').length,
+        table3.data[i].length);
+      [...tr.querySelectorAll('td')].forEach((td, j) => {
+        assert_equals(Number(td.textContent),
+          table3.data[i][j]);
+      });
+    });
+  }
+
   // Here the contract is tiny simple
   // Any data MUST be presented as a MATRIX, e.g.
   // [[x1, x2, x3...], [x4, x5, x6...] ...]
@@ -57,24 +70,12 @@ test(() => {
   document.body.appendChild(table3);
 
   // [VERIFY]
-  assert_equals(table3.querySelectorAll('tbody > tr').length, table3.data.length);
-  [...table3.querySelectorAll('tbody > tr')].forEach((tr, i) => {
-    assert_equals(tr.querySelectorAll('td').length, table3.data[i].length);
-    [...tr.querySelectorAll('td')].forEach((td, j) => {
-      assert_equals(Number(td.textContent), table3.data[i][j]);
-    });
-  });
+  verify(table3);
 
   // [SETUP RUN]
   table3.data = [[11, 12, 13], [14, 15, 16], [17, 18, 19], [20, 21, 22]];
   // [VERIFY]
-  assert_equals(table3.querySelectorAll('tbody > tr').length, table3.data.length);
-  [...table3.querySelectorAll('tbody > tr')].forEach((tr, i) => {
-    assert_equals(tr.querySelectorAll('td').length, table3.data[i].length);
-    [...tr.querySelectorAll('td')].forEach((td, j) => {
-      assert_equals(Number(td.textContent), table3.data[i][j]);
-    });
-  });
+  verify(table3);
 
   // [TEARDOWN]
   document.body.removeChild(table3);
