@@ -48,6 +48,7 @@
         }
       });
 
+      var data_ = [];
       Object.defineProperty(this, 'data', {
         get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
             .map(tr => [...tr.querySelectorAll('td')]
@@ -57,6 +58,7 @@
                 return v;
               })),
         set: (data) => {
+          data_ = [...data];
           var tr = d3.select(tbody)
             .selectAll('tr')
             .data(data);
@@ -110,27 +112,33 @@
       }
 
       let doSort = () => {
-        let sort = [...sort_].map((d) => {
-          let dir = 'ascending';
-          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
-          [...thead.querySelectorAll('th')].forEach(c => {
-            if (c.textContent === d) {
-              (dir === 'ascending' && c.classList.add('th--sort-asc'));
-              (dir === 'descending' && c.classList.add('th--sort-desc'));
-            }
+        let data__, sort = [...sort_].map((d) => {
+            let dir = 'ascending';
+            (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+            [...thead.querySelectorAll('th')].forEach(c => {
+              if (c.textContent === d) {
+                (dir === 'ascending' && c.classList.add('th--sort-asc'));
+                (dir === 'descending' && c.classList.add('th--sort-desc'));
+              }
+            });
+            return {
+              i: [...this.columns].indexOf(d),
+              dir: dir
+            };
           });
-          return {
-            i: [...this.columns].indexOf(d),
-            dir: dir
-          };
-        });
 
-        this.data = this.data.sort((a, b) => {
-          return sort.reduce((r, d) => {
-            if (r !== 0) { return r; }
-            return d3[d.dir](a[d.i], b[d.i]);
-          }, 0);
-        });
+        if (sort.length > 0) {
+          data__ = [...data_];
+          this.data = data_.sort((a, b) => {
+            return sort.reduce((r, d) => {
+              if (r !== 0) { return r; }
+              return d3[d.dir](a[d.i], b[d.i]);
+            }, 0);
+          });
+          data_ = data__;
+        } else {
+          this.data = data_;
+        }
       };
 
       modifySet(sort_);

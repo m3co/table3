@@ -146,14 +146,23 @@ promise_test(function() {
     document.body.appendChild(table3);
 
     // [VERIFY]
-    var actual = table3.data;
-    json.data.sort((a, b) => {
+    var actual;
+    actual = table3.data;
+    [...json.data].sort((a, b) => {
       if (a[2] > b[2]) return -1;
       if (a[2] < b[2]) return 1;
       if (a[1] > b[1]) return 1;
       if (a[1] < b[1]) return -1;
       return 0;
     }).forEach((expected, i) => {
+      assert_equals(expected[1], actual[i][1]);
+      assert_equals(expected[2], actual[i][2]);
+    });
+
+    table3.sort.delete('-value');
+    table3.sort.delete('city');
+    actual = table3.data;
+    json.data.forEach((expected, i) => {
       assert_equals(expected[1], actual[i][1]);
       assert_equals(expected[2], actual[i][2]);
     });
