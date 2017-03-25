@@ -58,7 +58,7 @@ test(() => {
       assert_equals(tr.querySelectorAll('td').length,
         table3.data[i].length);
       [...tr.querySelectorAll('td')].forEach((td, j) => {
-        assert_equals(td.textContent,
+        assert_equals(Number(td.textContent),
           table3.data[i][j]);
       });
     });

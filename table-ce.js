@@ -35,7 +35,11 @@
       Object.defineProperty(this, 'data', {
         get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
             .map(tr => [...tr.querySelectorAll('td')]
-              .map(td => td.textContent)),
+              .map(td => {
+                var v = td.textContent;
+                if (Number(v).toString() === v) return Number(v);
+                return v;
+              })),
         set: (data) => {
           var tr = d3.select(tbody)
             .selectAll('tr')
