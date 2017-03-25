@@ -6,6 +6,7 @@ test(() => {
   assert_true(table3.columns instanceof Set, 'columns is present');
   assert_true(table3.data instanceof Array, 'data is present');
   assert_true(table3.hasOwnProperty('filter'), 'filter is present');
+  assert_true(table3.sort instanceof Set, 'sort is present');
 }, 'Table3 element has a defined API');
 
 test(() => {
@@ -117,11 +118,45 @@ promise_test(function() {
 
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
+    // [SETUP]
     var table3 = document.createElement('x-table');
 
     table3.columns = json.cols;
     table3.data = json.data;
 
+    /*
+     * Let's assume that I'm able to set the sort list in different ways
+     */
+    // [RUN-VERIFY]
+    table3.sort = ['-value', 'city'];
+    assert_true(table3.sort instanceof Set);
+    table3.sort = new Set(['-value', 'city']);
+    assert_true(table3.sort instanceof Set);
+    table3.sort = '-value city';
+    assert_true(table3.sort instanceof Set);
+
+    table3.sort = new Set();
+    table3.sort.add('-value');
+    table3.sort.add('city');
+    assert_true(table3.sort instanceof Set);
+
+    // [RUN]
     document.body.appendChild(table3);
+
+    // [VERIFY]
+    var actual = table3.data;
+    json.data.sort((a, b) => {
+      if (a[2] > b[2]) return -1;
+      if (a[2] < b[2]) return 1;
+      if (a[1] > b[1]) return 1;
+      if (a[1] < b[1]) return -1;
+      return 0;
+    }).forEach((expected, i) => {
+      assert_equals(expected[1], actual[i][1]);
+      assert_equals(expected[2], actual[i][2]);
+    });
+
+    // [TEARDOWN]
+    document.body.removeChild(table3);
   });
 }, 'Sort data');

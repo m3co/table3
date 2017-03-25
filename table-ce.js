@@ -81,6 +81,45 @@
         }
       });
 
+      var sort_ = new Set();
+      function modifySet(set) {
+        set.add = function add(value) {
+          Set.prototype.add.call(this, value);
+          doSort();
+        }
+      };
+
+      let doSort = () => {
+        let sort = [...sort_].map((d) => {
+          let dir = 'ascending';
+          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+          return {
+            i: [...this.columns].indexOf(d),
+            dir: dir
+          };
+        });
+
+        this.data = this.data.sort((a, b) => {
+          return sort.reduce((r, d) => {
+            if (r !== 0) return r;
+            return d3[d.dir](a[d.i], b[d.i]);
+          }, 0);
+        });
+      };
+
+      modifySet(sort_);
+      Object.defineProperty(this, 'sort', {
+        get: () => sort_,
+        set: (sort) => {
+          typeof(sort) === typeof('') &&
+            (sort_ = new Set(sort.split(" ").filter(d => d.length)));
+          ((Array.isArray(sort)) || (sort instanceof Set)) &&
+            (sort_ = new Set(sort));
+          modifySet(sort_);
+          doSort();
+        }
+      });
+
       this._table = table;
     }
 
