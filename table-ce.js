@@ -25,7 +25,23 @@
           th.enter()
             .append('th')
             .merge(th)
-            .text(d => d);
+            .text(d => d)
+            .on('click', d => {
+              let th = d3.event.target;
+              if (th.classList.contains('th--sort-asc')) {
+                th.classList.remove('th--sort-asc');
+                Set.prototype.delete.call(sort_, d);
+                th.classList.add('th--sort-desc');
+                Set.prototype.add.call(sort_, '-' + d);
+              } else if (th.classList.contains('th--sort-desc')) {
+                th.classList.remove('th--sort-desc');
+                Set.prototype.delete.call(sort_, '-' + d);
+              } else {
+                th.classList.add('th--sort-asc');
+                Set.prototype.add.call(sort_, d);
+              }
+              doSort();
+            });
 
           th.exit()
             .remove();
@@ -86,13 +102,23 @@
         set.add = function add(value) {
           Set.prototype.add.call(this, value);
           doSort();
-        }
+        };
+        set.delete = function remove(value) {
+          Set.prototype.delete.call(this, value);
+          doSort();
+        };
       };
 
       let doSort = () => {
         let sort = [...sort_].map((d) => {
           let dir = 'ascending';
           (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+          [...thead.querySelectorAll('th')].forEach(c => {
+            if (c.textContent === d) {
+              (dir === 'ascending' && c.classList.add('th--sort-asc'));
+              (dir === 'descending' && c.classList.add('th--sort-desc'));
+            }
+          });
           return {
             i: [...this.columns].indexOf(d),
             dir: dir
