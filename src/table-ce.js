@@ -138,7 +138,7 @@
         get: () => sort_,
         set: (sort) => {
           typeof(sort) === typeof('') &&
-            (sort_ = new Set(sort.split(' ').filter(d => d.length)));
+            (sort_ = new Set(sort.split(',').filter(d => d.length)));
           ((Array.isArray(sort)) || (sort instanceof Set)) &&
             (sort_ = new Set(sort));
           modifySet(sort_);

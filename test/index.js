@@ -132,8 +132,10 @@ promise_test(function() {
     assert_true(table3.sort instanceof Set);
     table3.sort = new Set(['-value', 'city']);
     assert_true(table3.sort instanceof Set);
-    table3.sort = '-value city';
+    table3.sort = '-value,city';
     assert_true(table3.sort instanceof Set);
+    assert_equals([...table3.sort][0], '-value');
+    assert_equals([...table3.sort][1], 'city');
 
     table3.sort = new Set();
     table3.sort.add('-value');
