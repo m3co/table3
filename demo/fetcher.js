@@ -4,6 +4,12 @@ document.currentFragment.loaded.then(fragment => {
   fetch(url)
     .then(response => response.json())
     .then(json => {
-      document.querySelector('[data-from="fetcher"]').render(json);
+      var table3 = document.querySelector('x-table');
+      table3.data = json.data.map(item => {
+        return Object.keys(item.attributes).map(function(key) {
+          return this[key];
+        }, item.attributes);
+      });
+      table3.columns = Object.keys(json.data[0].attributes);
     });
 });

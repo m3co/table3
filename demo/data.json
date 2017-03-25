@@ -34,6 +34,7 @@
       "attributes": {
         "name": "Christine Lobowski",
         "age": "42",
+        "gender": "female",
         "height": 0,
         "col": "green",
         "dob": "22/05/1982",
@@ -51,6 +52,7 @@
         "height": 1,
         "col": "orange",
         "dob": "01/08/1980",
+        "cheese": "true",
         "lucky_no": 18
       }
     },
@@ -64,6 +66,7 @@
         "height": 5,
         "col": "yellow",
         "dob": "31/01/1999",
+        "cheese": "true",
         "lucky_no": 33
       }
     },
@@ -101,6 +104,7 @@
       "attributes": {
         "name": "Gemma Jane",
         "age": "60",
+        "gender": "male",
         "height": 0,
         "col": "red",
         "dob": "22/05/1982",
@@ -118,6 +122,7 @@
         "height": 1,
         "col": "maroon",
         "dob": "11/11/1970",
+        "cheese": "true",
         "lucky_no": 44
       }
     },
@@ -131,6 +136,7 @@
         "height": 5,
         "col": "red",
         "dob": "22/03/1998",
+        "cheese": false,
         "lucky_no": 9
       }
     }
