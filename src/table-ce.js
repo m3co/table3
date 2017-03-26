@@ -30,17 +30,17 @@
               let th = d3.event.target;
               if (th.classList.contains('th--sort-asc')) {
                 th.classList.remove('th--sort-asc');
-                Set.prototype.delete.call(sort_, d);
                 th.classList.add('th--sort-desc');
-                Set.prototype.add.call(sort_, '-' + d);
+                var sort__ = [...sort_];
+                sort__[sort__.indexOf(d)] = '-' + d;
+                this.sort = sort__;
               } else if (th.classList.contains('th--sort-desc')) {
                 th.classList.remove('th--sort-desc');
-                Set.prototype.delete.call(sort_, '-' + d);
+                this.sort.delete('-' + d);
               } else {
                 th.classList.add('th--sort-asc');
-                Set.prototype.add.call(sort_, d);
+                this.sort.add(d);
               }
-              doSort();
             });
 
           th.exit()
