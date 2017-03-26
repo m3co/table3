@@ -128,19 +128,21 @@ promise_test(function() {
      * Let's assume that I'm able to set the sort list in different ways
      */
     // [RUN-VERIFY]
-    table3.sort = ['-value', 'city'];
-    assert_true(table3.sort instanceof Set);
-    table3.sort = new Set(['-value', 'city']);
-    assert_true(table3.sort instanceof Set);
-    table3.sort = '-value,city';
-    assert_true(table3.sort instanceof Set);
-    assert_equals([...table3.sort][0], '-value');
-    assert_equals([...table3.sort][1], 'city');
+    test(() => {
+      table3.sort = ['-value', 'city'];
+      assert_true(table3.sort instanceof Set);
+      table3.sort = new Set(['-value', 'city']);
+      assert_true(table3.sort instanceof Set);
+      table3.sort = '-value,city';
+      assert_true(table3.sort instanceof Set);
+      assert_equals([...table3.sort][0], '-value');
+      assert_equals([...table3.sort][1], 'city');
 
-    table3.sort = new Set();
-    table3.sort.add('-value');
-    table3.sort.add('city');
-    assert_true(table3.sort instanceof Set);
+      table3.sort = new Set();
+      table3.sort.add('-value');
+      table3.sort.add('city');
+      assert_true(table3.sort instanceof Set);
+    }, "Setup the sort list in different ways");
 
     // [RUN]
     document.body.appendChild(table3);
@@ -159,13 +161,15 @@ promise_test(function() {
       assert_equals(expected[2], actual[i][2]);
     });
 
-    table3.sort.delete('-value');
-    table3.sort.delete('city');
-    actual = table3.data;
-    json.data.forEach((expected, i) => {
-      assert_equals(expected[1], actual[i][1]);
-      assert_equals(expected[2], actual[i][2]);
-    });
+    test(() => {
+      table3.sort.delete('-value');
+      table3.sort.delete('city');
+      actual = table3.data;
+      json.data.forEach((expected, i) => {
+        assert_equals(expected[1], actual[i][1]);
+        assert_equals(expected[2], actual[i][2]);
+      });
+    }, "Reset the sort list");
 
     // [TEARDOWN]
     document.body.removeChild(table3);
