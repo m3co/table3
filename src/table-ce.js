@@ -1,6 +1,153 @@
 (() => {
   'use strict';
 
+  function modifySet(set, doSort) {
+    set.add = function add(value) {
+      Set.prototype.add.call(this, value);
+      doSort();
+    };
+    set.delete = function remove(value) {
+      Set.prototype.delete.call(this, value);
+      doSort();
+    };
+  }
+
+  function defineColumns(thead) {
+    Object.defineProperty(this, 'columns', {
+      get: () => new Set([...thead.querySelectorAll('th')]
+        .map(th => th.textContent)),
+      set: (columns) => {
+        var th = d3.select(thead)
+          .selectAll('th')
+          .data([...new Set(columns)]); // a bit weird...
+
+        th.text(d => d);
+
+        th.enter()
+          .append('th')
+          .merge(th)
+          .text(d => d)
+          .on('click', d => {
+            let th = d3.event.target;
+            if (th.classList.contains('th--sort-asc')) {
+              th.classList.remove('th--sort-asc');
+              th.classList.add('th--sort-desc');
+              var sort__ = [...this.sort];
+              sort__[sort__.indexOf(d)] = '-' + d;
+              this.sort = sort__;
+            } else if (th.classList.contains('th--sort-desc')) {
+              th.classList.remove('th--sort-desc');
+              this.sort.delete('-' + d);
+            } else {
+              th.classList.add('th--sort-asc');
+              this.sort.add(d);
+            }
+          });
+
+        th.exit()
+          .remove();
+      }
+    });
+  }
+
+  function defineData(tbody, internalParams) {
+    Object.defineProperty(this, 'data', {
+      get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
+        .map(tr => [...tr.querySelectorAll('td')]
+          .map(td => {
+            var v = td.textContent;
+            if (Number(v).toString() === v) { return Number(v); }
+            return v;
+          })),
+      set: (data) => {
+        internalParams.data = [...data];
+        var tr = d3.select(tbody)
+          .selectAll('tr')
+          .data(data);
+
+        var td = tr.enter()
+          .append('tr')
+          .merge(tr)
+          .selectAll('td')
+          .data(d => d);
+
+        tr.exit()
+          .remove();
+
+        td.text(d => d);
+
+        td.enter()
+          .append('td')
+          .merge(td)
+          .text(d => d);
+
+        td.exit()
+          .remove();
+      }
+    });
+  }
+
+  function defineFilter(tbody, internalParams) {
+    Object.defineProperty(this, 'filter', {
+      get: () => internalParams.filter,
+      set: (filter) => {
+        var filter_ = filter.toLowerCase();
+        d3.select(tbody).selectAll('tr')
+          .each((d, i, trs) => {
+            let includes = d.join().toLowerCase().includes(filter_);
+            includes && (trs[i].hidden = false);
+            !includes && (trs[i].hidden = true);
+          });
+        internalParams.filter = filter;
+      }
+    });
+  }
+
+  function defineSort(thead, internalParams) {
+    let doSort = () => {
+      let data__, sort = [...internalParams.sort].map((d) => {
+          let dir = 'ascending';
+          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+          [...thead.querySelectorAll('th')].forEach(c => {
+            if (c.textContent === d) {
+              (dir === 'ascending' && c.classList.add('th--sort-asc'));
+              (dir === 'descending' && c.classList.add('th--sort-desc'));
+            }
+          });
+          return {
+            i: [...this.columns].indexOf(d),
+            dir: dir
+          };
+        });
+
+      if (sort.length > 0) {
+        data__ = [...internalParams.data];
+        this.data = internalParams.data.sort((a, b) => {
+          return sort.reduce((r, d) => {
+            if (r !== 0) { return r; }
+            return d3[d.dir](a[d.i], b[d.i]);
+          }, 0);
+        });
+        internalParams.data = data__;
+      } else {
+        this.data = internalParams.data;
+      }
+    };
+
+    modifySet(internalParams.sort, doSort);
+    Object.defineProperty(this, 'sort', {
+      get: () => internalParams.sort,
+      set: (sort) => {
+        typeof(sort) === typeof('') &&
+          (internalParams.sort = new Set(sort.split(',').filter(d => d.length)));
+        ((Array.isArray(sort)) || (sort instanceof Set)) &&
+          (internalParams.sort = new Set(sort));
+        modifySet(internalParams.sort, doSort);
+        doSort();
+      }
+    });
+  }
+
   class HTMLTableElement extends HTMLElement {
     constructor() {
       super();
@@ -12,147 +159,16 @@
       (!thead) && (thead = table.appendChild(document.createElement('thead')));
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
-      Object.defineProperty(this, 'columns', {
-        get: () => new Set([...thead.querySelectorAll('th')]
-          .map(th => th.textContent)),
-        set: (columns) => {
-          var th = d3.select(thead)
-            .selectAll('th')
-            .data([...new Set(columns)]); // a bit weird...
-
-          th.text(d => d);
-
-          th.enter()
-            .append('th')
-            .merge(th)
-            .text(d => d)
-            .on('click', d => {
-              let th = d3.event.target;
-              if (th.classList.contains('th--sort-asc')) {
-                th.classList.remove('th--sort-asc');
-                th.classList.add('th--sort-desc');
-                var sort__ = [...sort_];
-                sort__[sort__.indexOf(d)] = '-' + d;
-                this.sort = sort__;
-              } else if (th.classList.contains('th--sort-desc')) {
-                th.classList.remove('th--sort-desc');
-                this.sort.delete('-' + d);
-              } else {
-                th.classList.add('th--sort-asc');
-                this.sort.add(d);
-              }
-            });
-
-          th.exit()
-            .remove();
-        }
-      });
-
-      var data_ = [];
-      Object.defineProperty(this, 'data', {
-        get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
-          .map(tr => [...tr.querySelectorAll('td')]
-            .map(td => {
-              var v = td.textContent;
-              if (Number(v).toString() === v) { return Number(v); }
-              return v;
-            })),
-        set: (data) => {
-          data_ = [...data];
-          var tr = d3.select(tbody)
-            .selectAll('tr')
-            .data(data);
-
-          var td = tr.enter()
-            .append('tr')
-            .merge(tr)
-            .selectAll('td')
-            .data(d => d);
-
-          tr.exit()
-            .remove();
-
-          td.text(d => d);
-
-          td.enter()
-            .append('td')
-            .merge(td)
-            .text(d => d);
-
-          td.exit()
-            .remove();
-        }
-      });
-
-      var filter_ = '';
-      Object.defineProperty(this, 'filter', {
-        get: () => filter_,
-        set: (filter) => {
-          var filter_ = filter.toLowerCase();
-          d3.select(tbody).selectAll('tr')
-            .each((d, i, trs) => {
-              let includes = d.join().toLowerCase().includes(filter_);
-              includes && (trs[i].hidden = false);
-              !includes && (trs[i].hidden = true);
-            });
-          filter_ = filter;
-        }
-      });
-
-      var sort_ = new Set();
-      function modifySet(set) {
-        set.add = function add(value) {
-          Set.prototype.add.call(this, value);
-          doSort();
-        };
-        set.delete = function remove(value) {
-          Set.prototype.delete.call(this, value);
-          doSort();
-        };
-      }
-
-      let doSort = () => {
-        let data__, sort = [...sort_].map((d) => {
-            let dir = 'ascending';
-            (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
-            [...thead.querySelectorAll('th')].forEach(c => {
-              if (c.textContent === d) {
-                (dir === 'ascending' && c.classList.add('th--sort-asc'));
-                (dir === 'descending' && c.classList.add('th--sort-desc'));
-              }
-            });
-            return {
-              i: [...this.columns].indexOf(d),
-              dir: dir
-            };
-          });
-
-        if (sort.length > 0) {
-          data__ = [...data_];
-          this.data = data_.sort((a, b) => {
-            return sort.reduce((r, d) => {
-              if (r !== 0) { return r; }
-              return d3[d.dir](a[d.i], b[d.i]);
-            }, 0);
-          });
-          data_ = data__;
-        } else {
-          this.data = data_;
-        }
+      var internalParams = {
+        data: [],
+        filter: '',
+        sort: new Set()
       };
 
-      modifySet(sort_);
-      Object.defineProperty(this, 'sort', {
-        get: () => sort_,
-        set: (sort) => {
-          typeof(sort) === typeof('') &&
-            (sort_ = new Set(sort.split(',').filter(d => d.length)));
-          ((Array.isArray(sort)) || (sort instanceof Set)) &&
-            (sort_ = new Set(sort));
-          modifySet(sort_);
-          doSort();
-        }
-      });
+      defineColumns.call(this, thead);
+      defineData.call(this, tbody, internalParams);
+      defineFilter.call(this, tbody, internalParams);
+      defineSort.call(this, thead, internalParams);
 
       this._table = table;
     }
