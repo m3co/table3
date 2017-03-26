@@ -14,7 +14,7 @@
 
       Object.defineProperty(this, 'columns', {
         get: () => new Set([...thead.querySelectorAll('th')]
-            .map(th => th.textContent)),
+          .map(th => th.textContent)),
         set: (columns) => {
           var th = d3.select(thead)
             .selectAll('th')
@@ -51,12 +51,12 @@
       var data_ = [];
       Object.defineProperty(this, 'data', {
         get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
-            .map(tr => [...tr.querySelectorAll('td')]
-              .map(td => {
-                var v = td.textContent;
-                if (Number(v).toString() === v) { return Number(v); }
-                return v;
-              })),
+          .map(tr => [...tr.querySelectorAll('td')]
+            .map(td => {
+              var v = td.textContent;
+              if (Number(v).toString() === v) { return Number(v); }
+              return v;
+            })),
         set: (data) => {
           data_ = [...data];
           var tr = d3.select(tbody)
