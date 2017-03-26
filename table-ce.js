@@ -113,19 +113,19 @@
 
       let doSort = () => {
         let data__, sort = [...sort_].map((d) => {
-          let dir = 'ascending';
-          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
-          [...thead.querySelectorAll('th')].forEach(c => {
-            if (c.textContent === d) {
-              (dir === 'ascending' && c.classList.add('th--sort-asc'));
-              (dir === 'descending' && c.classList.add('th--sort-desc'));
-            }
+            let dir = 'ascending';
+            (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+            [...thead.querySelectorAll('th')].forEach(c => {
+              if (c.textContent === d) {
+                (dir === 'ascending' && c.classList.add('th--sort-asc'));
+                (dir === 'descending' && c.classList.add('th--sort-desc'));
+              }
+            });
+            return {
+              i: [...this.columns].indexOf(d),
+              dir: dir
+            };
           });
-          return {
-            i: [...this.columns].indexOf(d),
-            dir: dir
-          };
-        });
 
         if (sort.length > 0) {
           data__ = [...data_];
