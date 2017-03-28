@@ -175,3 +175,24 @@ promise_test(function() {
     document.body.removeChild(table3);
   });
 }, 'Sort data');
+
+promise_test(function() {
+  return fetch('fixture1.json').then(response => response.json()).then(json => {
+    var table3 = document.createElement('x-table');
+
+    table3.columns = json.cols;
+    table3.data = json.data;
+
+    document.body.appendChild(table3);
+
+    // [RUN]
+    table3.data[1][1] = "Schlutz";
+
+    // [VERIFY]
+    assert_equals(table3.data[1][1], "Schlutz");
+    assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
+
+    document.body.removeChild(table3);
+
+  });
+}, 'Test change values');
