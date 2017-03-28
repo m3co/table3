@@ -53,23 +53,33 @@
   function defineData(tbody, internalParams) {
     Object.defineProperty(this, 'data', {
       get: () => {
-        var trs = [...tbody.querySelectorAll('tr:not([hidden])')].map(tr => {
-          var tds = [];
-          return [...tr.querySelectorAll('td')].reduce((tds, td, i) => {
-            Object.defineProperty(tds, i, {
-              get: () => {
-                var v = td.textContent;
-                if (Number(v).toString() === v) { return Number(v); }
-                return v;
-              },
-              set: (value) => {
-                td.textContent = value;
-              }
-            });
-            return tds;
-          }, tds);
-        })
-        return trs;
+        var trs = [];
+        return [...tbody.querySelectorAll('tr:not([hidden])')]
+        .reduce((trs, tr, i) => {
+          Object.defineProperty(trs, i, {
+            get: () => {
+              var tds = [];
+              return [...tr.querySelectorAll('td')]
+              .reduce((tds, td, i) => {
+                Object.defineProperty(tds, i, {
+                  get: () => {
+                    var v = td.textContent;
+                    if (Number(v).toString() === v) { return Number(v); }
+                    return v;
+                  },
+                  set: (value) => {
+                    td.textContent = value;
+                  }
+                });
+                return tds;
+              }, tds);
+            },
+            set: (value) => {
+              // how to be here?
+            }
+          });
+          return trs;
+        }, trs);
       },
       set: (data) => {
         internalRender(tbody, internalParams, data);
