@@ -66,7 +66,7 @@
     Object.defineProperty(this, 'data', {
       get: () => internalParams.data,
       set: (value) => {
-        internalParams.data = [...value];
+        internalParams.data = value;
         internalRender(tbody, internalParams.data);
       }
     });
@@ -143,7 +143,7 @@
 
   function defineSort(thead, internalParams) {
     let doSort = () => {
-      let data__, sort = [...internalParams.sort].map((d) => {
+      let sort = [...internalParams.sort].map((d) => {
           let dir = 'ascending';
           (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
           [...thead.querySelectorAll('th')].forEach(c => {
@@ -159,14 +159,12 @@
         });
 
       if (sort.length > 0) {
-        data__ = [...internalParams.data];
         this.data = internalParams.data.sort((a, b) => {
           return sort.reduce((r, d) => {
             if (r !== 0) { return r; }
             return d3[d.dir](a[d.i], b[d.i]);
           }, 0);
         });
-        internalParams.data = data__;
       } else {
         this.data = internalParams.data;
       }
