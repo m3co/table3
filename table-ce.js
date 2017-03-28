@@ -68,31 +68,35 @@
           }, [])
         ),
       set: (data) => {
-        internalParams.data = [...data];
-        var tr = d3.select(tbody)
-          .selectAll('tr')
-          .data(data);
-
-        var td = tr.enter()
-          .append('tr')
-          .merge(tr)
-          .selectAll('td')
-          .data(d => d);
-
-        tr.exit()
-          .remove();
-
-        td.text(d => d);
-
-        td.enter()
-          .append('td')
-          .merge(td)
-          .text(d => d);
-
-        td.exit()
-          .remove();
+        internalRender(tbody, internalParams, data);
       }
     });
+  }
+
+  function internalRender(tbody, internalParams, data) {
+    internalParams.data = [...data];
+    var tr = d3.select(tbody)
+      .selectAll('tr')
+      .data(data);
+
+    var td = tr.enter()
+      .append('tr')
+      .merge(tr)
+      .selectAll('td')
+      .data(d => d);
+
+    tr.exit()
+      .remove();
+
+    td.text(d => d);
+
+    td.enter()
+      .append('td')
+      .merge(td)
+      .text(d => d);
+
+    td.exit()
+      .remove();
   }
 
   function defineFilter(tbody, internalParams) {
