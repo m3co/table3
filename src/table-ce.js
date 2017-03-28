@@ -53,8 +53,7 @@
   function defineData(tbody, internalParams) {
     Object.defineProperty(this, 'data', {
       get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
-        .map(tr => {
-          return [...tr.querySelectorAll('td')].reduce((obj, td, i) => {
+        .map(tr => [...tr.querySelectorAll('td')].reduce((obj, td, i) => {
             Object.defineProperty(obj, i, {
               get: () => {
                 var v = td.textContent;
@@ -66,8 +65,8 @@
               }
             });
             return obj;
-          }, []);
-        }),
+          }, [])
+        ),
       set: (data) => {
         internalParams.data = [...data];
         var tr = d3.select(tbody)
