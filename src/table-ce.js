@@ -63,45 +63,16 @@
   }
 
   function defineData(tbody, internalParams) {
-    var data = {};
     Object.defineProperty(this, 'data', {
-      get: () => {
-        var trs = [];
-        return [...tbody.querySelectorAll('tr')]
-        .reduce((trs, tr, i) => {
-          Object.defineProperty(trs, i, {
-            get: () => {
-              var tds = [];
-              return [...tr.querySelectorAll('td')]
-              .reduce((tds, td, i) => {
-                Object.defineProperty(tds, i, {
-                  get: () => {
-                    var v = td.textContent;
-                    if (Number(v).toString() === v) { return Number(v); }
-                    return v;
-                  },
-                  set: (value) => {
-                    td.textContent = value;
-                  }
-                });
-                return tds;
-              }, tds);
-            },
-            set: (value) => {
-              // how to be here?
-            }
-          });
-          return trs;
-        }, trs);
-      },
+      get: () => internalParams.data,
       set: (value) => {
-        internalRender(tbody, internalParams, value);
+        internalParams.data = [...value];
+        internalRender(tbody, internalParams.data);
       }
     });
   }
 
-  function internalRender(tbody, internalParams, data) {
-    internalParams.data = [...data];
+  function internalRender(tbody, data) {
     var tr = d3.select(tbody)
       .selectAll('tr')
       .data(data);
@@ -109,6 +80,29 @@
     var td = tr.enter()
       .append('tr')
       .merge(tr)
+      .each((d, i, trs) => {
+        Object.defineProperty(data, i, {
+          get: () => d.reduce((tds, d, i) => {
+              Object.defineProperty(tds, i, {
+                get: () => d,
+                set: (value) => {
+                  var td = trs[i].querySelectorAll('td')[i];
+                  d3.select(td)
+                    .text(value);
+                },
+                configurable: true
+              });
+              return tds;
+            }, []),
+          set: (value) => {
+            d3.select(trs[i])
+              .selectAll('td')
+              .data(value)
+              .text(d => d);
+          },
+          configurable: true
+        });
+      })
       .selectAll('td')
       .data(d => d);
 

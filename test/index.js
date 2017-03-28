@@ -100,6 +100,7 @@ promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]
     var table3 = document.createElement('x-table');
+    table3._table.hidden = true;
 
     table3.columns = json.cols;
     table3.data = json.data;
@@ -121,6 +122,7 @@ promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]
     var table3 = document.createElement('x-table');
+    table3._table.hidden = true;
 
     table3.columns = json.cols;
     table3.data = json.data;
@@ -180,6 +182,7 @@ promise_test(function() {
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     var table3 = document.createElement('x-table');
+    table3._table.hidden = true;
 
     table3.columns = json.cols;
     table3.data = json.data;
