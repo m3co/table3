@@ -50,11 +50,24 @@
     });
   }
 
+  function defineFiltered(tbody) {
+    Object.defineProperty(this, 'filtered', {
+      get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
+        .map(tr => [...tr.querySelectorAll('td')]
+          .map(td => {
+            var v = td.textContent;
+            if (Number(v).toString() === v) { return Number(v); }
+            return v;
+          }))
+    });
+  }
+
   function defineData(tbody, internalParams) {
+    var data = {};
     Object.defineProperty(this, 'data', {
       get: () => {
         var trs = [];
-        return [...tbody.querySelectorAll('tr:not([hidden])')]
+        return [...tbody.querySelectorAll('tr')]
         .reduce((trs, tr, i) => {
           Object.defineProperty(trs, i, {
             get: () => {
@@ -81,8 +94,8 @@
           return trs;
         }, trs);
       },
-      set: (data) => {
-        internalRender(tbody, internalParams, data);
+      set: (value) => {
+        internalRender(tbody, internalParams, value);
       }
     });
   }
@@ -194,6 +207,7 @@
       defineColumns.call(this, thead);
       defineData.call(this, tbody, internalParams);
       defineFilter.call(this, tbody, internalParams);
+      defineFiltered.call(this, tbody);
       defineSort.call(this, thead, internalParams);
 
       this._table = table;

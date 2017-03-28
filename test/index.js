@@ -6,6 +6,7 @@ test(() => {
   assert_true(table3.columns instanceof Set, 'columns is present');
   assert_true(table3.data instanceof Array, 'data is present');
   assert_true(table3.hasOwnProperty('filter'), 'filter is present');
+  assert_true(table3.hasOwnProperty('filtered'), 'filtered is present');
   assert_true(table3.sort instanceof Set, 'sort is present');
 }, 'Table3 element has a defined API');
 
