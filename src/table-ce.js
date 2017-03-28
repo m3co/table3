@@ -82,11 +82,16 @@
       .merge(tr)
       .each((d, i, trs) => {
         Object.defineProperty(data, i, {
-          get: () => d.reduce((tds, d, i) => {
-              Object.defineProperty(tds, i, {
-                get: () => d,
+          get: () => d.reduce((tds, d, j) => {
+              var td = trs[i].querySelectorAll('td')[j]
+              Object.defineProperty(tds, j, {
+                get: () => {
+                  var v = td.textContent;
+                  if (Number(v).toString() === v) { return Number(v); }
+                  return v;
+                },
                 set: (value) => {
-                  var td = trs[i].querySelectorAll('td')[i];
+                  trs[i].querySelectorAll('td')[j];
                   d3.select(td)
                     .text(value);
                 },
