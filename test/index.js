@@ -53,7 +53,7 @@ test(() => {
 
 test(() => {
 
-  function verify(table3) {
+  function verify(table3, fixture) {
     assert_equals(table3.querySelectorAll('tbody > tr').length,
       table3.data.length);
     [...table3.querySelectorAll('tbody > tr')].forEach((tr, i) => {
@@ -62,6 +62,10 @@ test(() => {
       [...tr.querySelectorAll('td')].forEach((td, j) => {
         assert_equals(Number(td.textContent),
           table3.data[i][j]);
+        assert_equals(fixture[i][j],
+          table3.data[i][j]);
+        assert_equals(Number(td.textContent),
+          fixture[i][j]);
       });
     });
   }
@@ -73,23 +77,26 @@ test(() => {
   // [SETUP]
   var table3 = document.createElement('x-table');
 
-  table3.data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+  var fixture = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
+  table3.data = fixture;
 
   // [RUN]
   document.body.appendChild(table3);
 
   // [VERIFY]
-  verify(table3);
+  verify(table3, fixture);
 
   // [SETUP RUN]
-  table3.data = [[11, 12, 13], [14, 15, 16], [17, 18, 19], [20, 21, 22]];
+  fixture = [[11, 12, 13], [14, 15, 16], [17, 18, 19], [20, 21, 22]];
+  table3.data = fixture;
   // [VERIFY]
-  verify(table3);
+  verify(table3, fixture);
 
   // [SETUP RUN]
-  table3.data = [[21, 22], [24, 25]];
+  fixture = [[21, 22], [24, 25]];
+  table3.data = fixture
   // [VERIFY]
-  verify(table3);
+  verify(table3, fixture);
 
   // [TEARDOWN]
   document.body.removeChild(table3);
@@ -152,8 +159,8 @@ promise_test(function() {
 
     // [VERIFY]
     var actual;
-    actual = table3.data;
-    [...json.data].sort((a, b) => {
+    actual = [...table3.data].map(item => item.map(item => item));
+    json.data.map(item => item.map(item => item)).sort((a, b) => {
       if (a[2] > b[2]) return -1;
       if (a[2] < b[2]) return 1;
       if (a[1] > b[1]) return 1;
@@ -167,7 +174,7 @@ promise_test(function() {
     test(() => {
       table3.sort.delete('-value');
       table3.sort.delete('city');
-      actual = table3.data;
+      actual = [...table3.data].map(item => item.map(item => item));
       json.data.forEach((expected, i) => {
         assert_equals(expected[1], actual[i][1]);
         assert_equals(expected[2], actual[i][2]);
