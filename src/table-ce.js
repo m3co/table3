@@ -6,7 +6,7 @@
       get: () => new Set([...thead.querySelectorAll('th')]
         .map(th => th.textContent)),
       set: (columns) => {
-        var th = d3.select(thead)
+        let th = d3.select(thead)
           .selectAll('th')
           .data([...new Set(columns)]); // a bit weird...
 
@@ -17,11 +17,12 @@
           .merge(th)
           .text(d => d)
           .on('click', d => {
+            let sort__;
             let th = d3.event.target;
             if (th.classList.contains('th--sort-asc')) {
               th.classList.remove('th--sort-asc');
               th.classList.add('th--sort-desc');
-              var sort__ = [...this.sort];
+              sort__ = [...this.sort];
               sort__[sort__.indexOf(d)] = '-' + d;
               this.sort = sort__;
             } else if (th.classList.contains('th--sort-desc')) {
@@ -40,24 +41,24 @@
   }
 
   function defineData(tbody) {
-    var data = [];
+    let data = [];
     Object.defineProperty(this, 'data', {
       get: () => data,
       set: (value) => {
-        var tr = d3.select(tbody)
+        let tr = d3.select(tbody)
           .selectAll('tr')
           .data(value);
 
-        var td = tr.enter()
+        let td = tr.enter()
           .append('tr')
           .merge(tr)
           .each((d, i, trs) => {
             Object.defineProperty(data, i, {
               get: () => d.reduce((tds, d, j) => {
-                  var td = trs[i].querySelectorAll('td')[j]
+                  let td = trs[i].querySelectorAll('td')[j]
                   Object.defineProperty(tds, j, {
                     get: () => {
-                      var v = td.textContent;
+                      let v = td.textContent;
                       if (Number(v).toString() === v) { return Number(v); }
                       return v;
                     },
@@ -106,7 +107,7 @@
       get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
         .map(tr => [...tr.querySelectorAll('td')]
           .map(td => {
-            var v = td.textContent;
+            let v = td.textContent;
             if (Number(v).toString() === v) { return Number(v); }
             return v;
           }))
@@ -114,11 +115,11 @@
   }
 
   function defineFilter(tbody) {
-    var filter = '';
+    let filter = '';
     Object.defineProperty(this, 'filter', {
       get: () => filter,
       set: (value) => {
-        var filter_ = value.toLowerCase();
+        let filter_ = value.toLowerCase();
         d3.select(tbody).selectAll('tr')
           .each((d, i, trs) => {
             let includes = d.join().toLowerCase().includes(filter_);
@@ -131,8 +132,8 @@
   }
 
   function defineSort(thead) {
-    var sort = new Set();
-    var original = null;
+    let sort = new Set();
+    let original = null;
     let doSort = () => {
       let sort_ = [...sort].map((d) => {
           let dir = 'ascending';
@@ -191,9 +192,9 @@
       super();
 
       // It's not in D3 flavour...
-      var table = document.createElement('table');
-      var thead = table.querySelector('thead');
-      var tbody = table.querySelector('tbody');
+      let table = document.createElement('table');
+      let thead = table.querySelector('thead');
+      let tbody = table.querySelector('tbody');
       (!thead) && (thead = table.appendChild(document.createElement('thead')));
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
