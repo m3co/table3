@@ -98,6 +98,16 @@ test(() => {
   // [VERIFY]
   verify(table3, fixture);
 
+  // [SETUP RUN]
+  fixture = [[21, 22], [99, 99, 99]];
+  table3.data[1] = fixture[1];
+  // [VERIFY]
+  verify(table3, fixture);
+
+  fixture[1][2] = 88;
+  table3.data[1][2] = 88;
+  verify(table3, fixture);
+
   // [TEARDOWN]
   document.body.removeChild(table3);
 
