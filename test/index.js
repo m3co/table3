@@ -132,7 +132,7 @@ promise_test(function() {
     table3._table.hidden = true;
 
     table3.columns = json.cols;
-    table3.data = json.data;
+    table3.data = json.data.map(item => item.map(item => item));
 
     /*
      * Let's assume that I'm able to set the sort list in different ways

@@ -67,6 +67,7 @@
       get: () => internalParams.data,
       set: (value) => {
         internalParams.data = value;
+        internalParams.original = [...value];
         internalRender(tbody, internalParams.data);
       }
     });
@@ -143,7 +144,7 @@
 
   function defineSort(thead, internalParams) {
     let doSort = () => {
-      let sort = [...internalParams.sort].map((d) => {
+      let toSort, sort = [...internalParams.sort].map((d) => {
           let dir = 'ascending';
           (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
           [...thead.querySelectorAll('th')].forEach(c => {
@@ -159,14 +160,15 @@
         });
 
       if (sort.length > 0) {
-        this.data = internalParams.data.sort((a, b) => {
+        toSort = internalParams.original.map(item => item.map(item => item));
+        this.data = toSort.sort((a, b) => {
           return sort.reduce((r, d) => {
             if (r !== 0) { return r; }
             return d3[d.dir](a[d.i], b[d.i]);
           }, 0);
         });
       } else {
-        this.data = internalParams.data;
+        this.data = internalParams.original;
       }
     };
 
@@ -197,6 +199,7 @@
 
       var internalParams = {
         data: [],
+        original: [],
         filter: '',
         sort: new Set()
       };
