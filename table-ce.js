@@ -17,14 +17,14 @@
           .merge(th)
           .text(d => d)
           .on('click', d => {
-            let sort__;
+            let sort;
             let th = d3.event.target;
             if (th.classList.contains('th--sort-asc')) {
               th.classList.remove('th--sort-asc');
               th.classList.add('th--sort-desc');
-              sort__ = [...this.sort];
-              sort__[sort__.indexOf(d)] = '-' + d;
-              this.sort = sort__;
+              sort = [...this.sort];
+              sort[sort.indexOf(d)] = '-' + d;
+              this.sort = sort;
             } else if (th.classList.contains('th--sort-desc')) {
               th.classList.remove('th--sort-desc');
               this.sort.delete('-' + d);
