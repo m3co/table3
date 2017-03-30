@@ -67,3 +67,15 @@ table.sort = sort;
 ```
 
 This property accepts different formats in comformance with [JSON API sorting](jsonapi.org/format/#fetching-sorting).
+
+* _columns_ property:
+```
+table.columns = ['Column1', 'Column2', ... 'ColumnN'];
+```
+
+Notice that the _columns_ variable is a Set.
+
+## Demo
+
+[Table in CE](http://table3.m3c.space/demo/table-ce.html)
+[Table in WC](http://table3.m3c.space/demo/table-wc.html)
