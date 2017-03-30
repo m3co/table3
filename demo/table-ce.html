@@ -2,20 +2,19 @@
 <html>
   <head>
     <title>Demo</title>
-    <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <script src="/bower_components/js-polyfills/polyfill.min.js"></script>
     <script src="/bower_components/element-matches/closest.js"></script>
-    <script src="/bower_components/pseudoimport-html/fragment-wc.js"></script>
+    <script src="/bower_components/pseudoimport-html/fragment-ce.js"></script>
     <script src="/bower_components/d3/d3.min.js"></script>
     <script src="/table-ce.js"></script>
   </head>
   <body>
     <x-fragment
       id="fetcher"
-      src="fetcher.html"
-      data-url="data.json"></x-fragment>
+      src="/trunk/fetcher.html"
+      data-url="/trunk/data.json"></x-fragment>
     <x-fragment
-      src="example-table.html"
+      src="/trunk/example-table.html"
       data-from="fetcher"
       data-sort="gender,-col"
       data-filter="o"></x-fragment>
