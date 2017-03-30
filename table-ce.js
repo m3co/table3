@@ -45,6 +45,7 @@
     Object.defineProperty(this, 'data', {
       get: () => data,
       set: (value) => {
+        let original = value;
         let tr = d3.select(tbody)
           .selectAll('tr')
           .data(value);
@@ -63,6 +64,7 @@
                       return v;
                     },
                     set: (value) => {
+                      original[i][j] = value;
                       trs[i].querySelectorAll('td')[j];
                       d3.select(td)
                         .text(value);
@@ -72,6 +74,7 @@
                   return tds;
                 }, []),
               set: (value) => {
+                original[i] = value;
                 d3.select(trs[i])
                   .selectAll('td')
                   .data(value)
