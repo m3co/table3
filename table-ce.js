@@ -1,6 +1,5 @@
 (() => {
   'use strict';
-
   function defineColumns(thead) {
     Object.defineProperty(this, 'columns', {
       get: () => new Set([...thead.querySelectorAll('th')]
@@ -56,23 +55,23 @@
           .each((d, i, trs) => {
             Object.defineProperty(data, i, {
               get: () => d.reduce((tds, d, j) => {
-                  let td = trs[i].querySelectorAll('td')[j]
-                  Object.defineProperty(tds, j, {
-                    get: () => {
-                      let v = td.textContent;
-                      if (Number(v).toString() === v) { return Number(v); }
-                      return v;
-                    },
-                    set: (value) => {
-                      original[i][j] = value;
-                      trs[i].querySelectorAll('td')[j];
-                      d3.select(td)
-                        .text(value);
-                    },
-                    configurable: true
-                  });
-                  return tds;
-                }, []),
+                let td = trs[i].querySelectorAll('td')[j];
+                Object.defineProperty(tds, j, {
+                  get: () => {
+                    let v = td.textContent;
+                    if (Number(v).toString() === v) { return Number(v); }
+                    return v;
+                  },
+                  set: (value) => {
+                    original[i][j] = value;
+                    trs[i].querySelectorAll('td')[j];
+                    d3.select(td)
+                      .text(value);
+                  },
+                  configurable: true
+                });
+                return tds;
+              }, []),
               set: (value) => {
                 original[i] = value;
                 d3.select(trs[i])
@@ -108,19 +107,19 @@
     let original = null;
     let doSort = () => {
       let sort_ = [...sort].map((d) => {
-          let dir = 'ascending';
-          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
-          [...thead.querySelectorAll('th')].forEach(c => {
-            if (c.textContent === d) {
-              (dir === 'ascending' && c.classList.add('th--sort-asc'));
-              (dir === 'descending' && c.classList.add('th--sort-desc'));
-            }
-          });
-          return {
-            i: [...this.columns].indexOf(d),
-            dir: dir
-          };
+        let dir = 'ascending';
+        (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+        [...thead.querySelectorAll('th')].forEach(c => {
+          if (c.textContent === d) {
+            (dir === 'ascending' && c.classList.add('th--sort-asc'));
+            (dir === 'descending' && c.classList.add('th--sort-desc'));
+          }
         });
+        return {
+          i: [...this.columns].indexOf(d),
+          dir: dir
+        };
+      });
       (!original) && (original = data.map(d => d.map(d => d)));
       if (sort_.length > 0) {
         this.data = original.map(d => d.map(d => d)).sort((a, b) => {
@@ -187,7 +186,7 @@
     });
   }
 
-  class HTMLTableElement extends HTMLElement {
+  class HTMLTable3Element extends HTMLElement {
     constructor() {
       super();
 
@@ -209,8 +208,10 @@
     connectedCallback() {
       this.appendChild(this._table);
     }
-
   }
 
-  window.customElements.define('x-table', HTMLTableElement);
+  if (!window.HTMLTable3Element) {
+    window.HTMLTable3Elemen = HTMLTable3Element;
+    window.customElements.define('x-table', HTMLTable3Element);
+  }
 })();
