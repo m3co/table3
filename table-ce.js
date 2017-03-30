@@ -40,7 +40,7 @@
     });
   }
 
-  function defineData(tbody) {
+  function defineDataAndSort(thead, tbody) {
     let data = [];
     Object.defineProperty(this, 'data', {
       get: () => data,
@@ -100,6 +100,59 @@
           .remove();
       }
     });
+
+    let sort = new Set();
+    let original = null;
+    let doSort = () => {
+      let sort_ = [...sort].map((d) => {
+          let dir = 'ascending';
+          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+          [...thead.querySelectorAll('th')].forEach(c => {
+            if (c.textContent === d) {
+              (dir === 'ascending' && c.classList.add('th--sort-asc'));
+              (dir === 'descending' && c.classList.add('th--sort-desc'));
+            }
+          });
+          return {
+            i: [...this.columns].indexOf(d),
+            dir: dir
+          };
+        });
+      (!original) && (original = data.map(d => d.map(d => d)));
+      if (sort_.length > 0) {
+        this.data = original.map(d => d.map(d => d)).sort((a, b) => {
+          return sort_.reduce((r, d) => {
+            if (r !== 0) { return r; }
+            return d3[d.dir](a[d.i], b[d.i]);
+          }, 0);
+        });
+      } else {
+        this.data = original;
+      }
+    };
+
+    function modifySet() {
+      sort.add = function add(value) {
+        Set.prototype.add.call(this, value);
+        doSort();
+      };
+      sort.delete = function remove(value) {
+        Set.prototype.delete.call(this, value);
+        doSort();
+      };
+    }
+    modifySet();
+    Object.defineProperty(this, 'sort', {
+      get: () => sort,
+      set: (value) => {
+        typeof(value) === typeof('') &&
+          (sort = new Set(value.split(',').filter(d => d.length)));
+        ((Array.isArray(value)) || (value instanceof Set)) &&
+          (sort = new Set(value));
+        modifySet();
+        doSort();
+      }
+    });
   }
 
   function defineFiltered(tbody) {
@@ -131,62 +184,6 @@
     });
   }
 
-  function defineSort(thead) {
-    let sort = new Set();
-    let original = null;
-    let doSort = () => {
-      let sort_ = [...sort].map((d) => {
-          let dir = 'ascending';
-          (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
-          [...thead.querySelectorAll('th')].forEach(c => {
-            if (c.textContent === d) {
-              (dir === 'ascending' && c.classList.add('th--sort-asc'));
-              (dir === 'descending' && c.classList.add('th--sort-desc'));
-            }
-          });
-          return {
-            i: [...this.columns].indexOf(d),
-            dir: dir
-          };
-        });
-      (!original) && (original = this.data.map(d => d.map(d => d)));
-      if (sort_.length > 0) {
-        this.data = original.map(d => d.map(d => d)).sort((a, b) => {
-          return sort_.reduce((r, d) => {
-            if (r !== 0) { return r; }
-            return d3[d.dir](a[d.i], b[d.i]);
-          }, 0);
-        });
-      } else {
-        this.data = original;
-
-      }
-    };
-
-    function modifySet() {
-      sort.add = function add(value) {
-        Set.prototype.add.call(this, value);
-        doSort();
-      };
-      sort.delete = function remove(value) {
-        Set.prototype.delete.call(this, value);
-        doSort();
-      };
-    }
-    modifySet();
-    Object.defineProperty(this, 'sort', {
-      get: () => sort,
-      set: (value) => {
-        typeof(value) === typeof('') &&
-          (sort = new Set(value.split(',').filter(d => d.length)));
-        ((Array.isArray(value)) || (value instanceof Set)) &&
-          (sort = new Set(value));
-        modifySet();
-        doSort();
-      }
-    });
-  }
-
   class HTMLTableElement extends HTMLElement {
     constructor() {
       super();
@@ -199,10 +196,9 @@
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
       defineColumns.call(this, thead);
-      defineData.call(this, tbody);
+      defineDataAndSort.call(this, thead, tbody);
       defineFilter.call(this, tbody);
       defineFiltered.call(this, tbody);
-      defineSort.call(this, thead, tbody);
 
       this._table = table;
     }
