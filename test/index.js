@@ -162,7 +162,7 @@ promise_test(function() {
       table3.sort.add('-value');
       table3.sort.add('city');
       assert_true(table3.sort instanceof Set);
-    }, "Setup the sort list in different ways");
+    }, 'Setup the sort list in different ways');
 
     // [RUN]
     document.body.appendChild(table3);
@@ -189,7 +189,7 @@ promise_test(function() {
         assert_equals(expected[1], actual[i][1]);
         assert_equals(expected[2], actual[i][2]);
       });
-    }, "Reset the sort list");
+    }, 'Reset the sort list');
 
     // [TEARDOWN]
     document.body.removeChild(table3);
@@ -208,24 +208,24 @@ promise_test(function() {
 
     test(() => {
       // [RUN]
-      table3.data[1][1] = "Schlutz";
+      table3.data[1][1] = 'Schlutz';
 
       // [VERIFY]
-      assert_equals(table3.data[1][1], "Schlutz");
+      assert_equals(table3.data[1][1], 'Schlutz');
       assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
 
-      table3.sort = "city";
-      table3.sort = "";
+      table3.sort = 'city';
+      table3.sort = '';
 
       // [VERIFY]
-      assert_equals(table3.data[1][1], "Schlutz");
+      assert_equals(table3.data[1][1], 'Schlutz');
       assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
 
-    }, "Change data[i][j] and restore sort");
+    }, 'Change data[i][j] and restore sort');
 
     test(() => {
       // [RUN]
-      var fixture = ["Hope", "Hackermann", 33, "2016-06-08T16:43:46-07:00"];
+      var fixture = ['Hope', 'Hackermann', 33, '2016-06-08T16:43:46-07:00'];
       table3.data[1] = fixture;
 
       // [VERIFY]
@@ -234,8 +234,8 @@ promise_test(function() {
         assert_equals(table3.data[1][i].toString(), table3.querySelectorAll('tr')[1].querySelectorAll('td')[i].textContent);
       });
 
-      table3.sort = "city";
-      table3.sort = "";
+      table3.sort = 'city';
+      table3.sort = '';
 
       // [VERIFY]
       fixture.forEach((item, i) => {
@@ -243,7 +243,7 @@ promise_test(function() {
         assert_equals(table3.data[1][i].toString(), table3.querySelectorAll('tr')[1].querySelectorAll('td')[i].textContent);
       });
 
-    }, "Change data[i] and restore sort");
+    }, 'Change data[i] and restore sort');
 
     document.body.removeChild(table3);
 
