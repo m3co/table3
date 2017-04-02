@@ -199,7 +199,8 @@ promise_test(function() {
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     var table3 = document.createElement('x-table');
-    table3._table.hidden = true;
+    //table3._table.hidden = true;
+    window.table = table3;
 
     table3.columns = json.cols;
     table3.data = json.data;
@@ -245,7 +246,35 @@ promise_test(function() {
 
     }, 'Change data[i] and restore sort');
 
-    document.body.removeChild(table3);
+    test(() => {
+      // [RUN]
+      table3.sort = 'city';
+      table3.data[1][1] = 'Schlutz';
+      table3.sort = '';
+
+      // [VERIFY]
+      assert_equals(table3.data[1][1], 'Hackermann');
+      assert_equals(table3.data[32][1], 'Schlutz');
+      assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
+
+    }, 'Do sort, change data[i][j] and restore sort');
+
+    test(() => {
+      // [RUN]
+      table3.sort = 'city';
+      var fixture = ['Hope', 'Hackermann', 33, '2016-06-08T16:43:46-07:00'];
+      table3.data[3] = fixture;
+      table3.sort = '';
+
+      // [VERIFY]
+      fixture.forEach((item, i) => {
+        assert_equals(table3.data[91][i], item);
+        assert_equals(table3.data[91][i].toString(), table3.querySelectorAll('tr')[91].querySelectorAll('td')[i].textContent);
+      });
+
+    }, 'Do sort, change data[i] and restore sort');
+
+    //document.body.removeChild(table3);
 
   });
 }, 'Test change values and sort');

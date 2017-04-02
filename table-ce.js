@@ -63,7 +63,13 @@
                     return v;
                   },
                   set: (value) => {
-                    original[i][j] = value;
+                    if (unsorted) {
+                      unsorted[unsorted.findIndex(row => row.every(
+                        (item, j) => item === original[i][j])
+                      )][j] = value;
+                    } else {
+                      original[i][j] = value;
+                    }
                     trs[i].querySelectorAll('td')[j];
                     d3.select(td)
                       .text(value);
@@ -73,7 +79,13 @@
                 return tds;
               }, []),
               set: (value) => {
-                original[i] = value;
+                if (unsorted) {
+                  unsorted[unsorted.findIndex(row => row.every(
+                    (item, j) => item === original[i][j])
+                  )] = value;
+                } else {
+                  original[i] = value;
+                }
                 d3.select(trs[i])
                   .selectAll('td')
                   .data(value)
@@ -120,8 +132,8 @@
           dir: dir
         };
       });
-      (!unsorted) && (unsorted = data.map(d => d.map(d => d)));
       if (sort_.length > 0) {
+        (!unsorted) && (unsorted = data.map(d => d.map(d => d)));
         this.data = unsorted.map(d => d.map(d => d)).sort((a, b) => {
           return sort_.reduce((r, d) => {
             if (r !== 0) { return r; }
@@ -129,7 +141,7 @@
           }, 0);
         });
       } else {
-        this.data = unsorted;
+        (unsorted) && (this.data = unsorted);
         this.unsorted = null;
       }
     };

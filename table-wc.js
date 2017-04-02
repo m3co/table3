@@ -74,7 +74,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                     return v;
                   },
                   set: function set(value) {
-                    original[i][j] = value;
+                    if (unsorted) {
+                      unsorted[unsorted.findIndex(function (row) {
+                        return row.every(function (item, j) {
+                          return item === original[i][j];
+                        });
+                      })][j] = value;
+                    } else {
+                      original[i][j] = value;
+                    }
                     trs[i].querySelectorAll('td')[j];
                     d3.select(td).text(value);
                   },
@@ -84,7 +92,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               }, []);
             },
             set: function set(value) {
-              original[i] = value;
+              if (unsorted) {
+                unsorted[unsorted.findIndex(function (row) {
+                  return row.every(function (item, j) {
+                    return item === original[i][j];
+                  });
+                })] = value;
+              } else {
+                original[i] = value;
+              }
               d3.select(trs[i]).selectAll('td').data(value).text(function (d) {
                 return d;
               });
@@ -128,12 +144,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           dir: dir
         };
       });
-      !unsorted && (unsorted = data.map(function (d) {
-        return d.map(function (d) {
-          return d;
-        });
-      }));
       if (sort_.length > 0) {
+        !unsorted && (unsorted = data.map(function (d) {
+          return d.map(function (d) {
+            return d;
+          });
+        }));
         _this2.data = unsorted.map(function (d) {
           return d.map(function (d) {
             return d;
@@ -147,7 +163,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           }, 0);
         });
       } else {
-        _this2.data = unsorted;
+        unsorted && (_this2.data = unsorted);
         _this2.unsorted = null;
       }
     };
