@@ -104,7 +104,7 @@
     });
 
     let sort = new Set();
-    let original = null;
+    let unsorted = null;
     let doSort = () => {
       let sort_ = [...sort].map((d) => {
         let dir = 'ascending';
@@ -120,16 +120,17 @@
           dir: dir
         };
       });
-      (!original) && (original = data.map(d => d.map(d => d)));
+      (!unsorted) && (unsorted = data.map(d => d.map(d => d)));
       if (sort_.length > 0) {
-        this.data = original.map(d => d.map(d => d)).sort((a, b) => {
+        this.data = unsorted.map(d => d.map(d => d)).sort((a, b) => {
           return sort_.reduce((r, d) => {
             if (r !== 0) { return r; }
             return d3[d.dir](a[d.i], b[d.i]);
           }, 0);
         });
       } else {
-        this.data = original;
+        this.data = unsorted;
+        this.unsorted = null;
       }
     };
 

@@ -112,7 +112,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     });
 
     var sort = new Set();
-    var original = null;
+    var unsorted = null;
     var doSort = function doSort() {
       var sort_ = [].concat(_toConsumableArray(sort)).map(function (d) {
         var dir = 'ascending';
@@ -128,13 +128,13 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           dir: dir
         };
       });
-      !original && (original = data.map(function (d) {
+      !unsorted && (unsorted = data.map(function (d) {
         return d.map(function (d) {
           return d;
         });
       }));
       if (sort_.length > 0) {
-        _this2.data = original.map(function (d) {
+        _this2.data = unsorted.map(function (d) {
           return d.map(function (d) {
             return d;
           });
@@ -147,7 +147,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           }, 0);
         });
       } else {
-        _this2.data = original;
+        _this2.data = unsorted;
+        _this2.unsorted = null;
       }
     };
 
