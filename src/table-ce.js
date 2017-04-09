@@ -13,7 +13,8 @@
       (!tbody) && (tbody = table.appendChild(document.createElement('tbody')));
 
       defineColumns.call(this, thead);
-      defineDataAndSort.call(this, thead, tbody);
+      defineData.call(this, tbody);
+      defineSort.call(this, thead, tbody);
       defineFilter.call(this, tbody);
       defineFiltered.call(this, tbody);
 

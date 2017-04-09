@@ -143,7 +143,7 @@ promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]
     var table3 = document.createElement('x-table');
-    //table3._table.hidden = true;
+    table3._table.hidden = true;
 
     table3.columns = json.cols;
     table3.data = json.data.map(item => item.map(item => item));
@@ -200,6 +200,6 @@ promise_test(function() {
     }, 'Reset the sort list');
 
     // [TEARDOWN]
-    //document.body.removeChild(table3);
+    document.body.removeChild(table3);
   });
 }, 'Sort data');
