@@ -1,7 +1,5 @@
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 (function () {
@@ -48,72 +46,42 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     });
   }
 
-  function defineDataAndSort(thead, tbody) {
-    var _this2 = this;
-
+  function defineData(tbody) {
     var data = [];
     Object.defineProperty(this, 'data', {
       get: function get() {
         return data;
       },
       set: function set(value) {
-        var original = value;
-        var tr = d3.select(tbody).selectAll('tr').data(value);
-
-        var td = tr.enter().append('tr').merge(tr).each(function (d, i, trs) {
+        data = value.reduce(function (data, row, i) {
           Object.defineProperty(data, i, {
             get: function get() {
-              return d.reduce(function (tds, d, j) {
-                var td = trs[i].querySelectorAll('td')[j];
-                Object.defineProperty(tds, j, {
+              return value[i].reduce(function (data, row, j) {
+                Object.defineProperty(data, j, {
                   get: function get() {
-                    var v = td.textContent;
-                    if (Number(v).toString() === v) {
-                      return Number(v);
-                    }
-                    return v;
+                    return value[i][j];
                   },
                   set: function set(value) {
-                    if (unsorted) {
-                      unsorted[unsorted.findIndex(function (row) {
-                        return row.every(function (item, j) {
-                          return item === original[i][j];
-                        });
-                      })][j] = value;
-                    } else {
-                      original[i][j] = value;
-                    }
-                    trs[i].querySelectorAll('td')[j];
-                    d3.select(td).text(value);
-                  },
-                  configurable: true
+                    throw new Error('row and col read only');
+                  }
                 });
-                return tds;
+                return data;
               }, []);
             },
             set: function set(value) {
-              if (unsorted) {
-                unsorted[unsorted.findIndex(function (row) {
-                  return row.every(function (item, j) {
-                    return item === original[i][j];
-                  });
-                })] = value;
-              } else {
-                original[i] = value;
-              }
-              d3.select(trs[i]).selectAll('td').data(value).text(function (d) {
-                return d;
-              });
-            },
-            configurable: true
+              throw new Error('row read only');
+            }
           });
-        }).selectAll('td').data(function (d) {
+          return data;
+        }, []);
+
+        var tr = d3.select(tbody).selectAll('tr').data(value);
+
+        var td = tr.enter().append('tr').merge(tr).selectAll('td').data(function (d) {
           return d;
         });
 
-        tr.exit().each(function (d, i) {
-          data.length > i && (data.length = i);
-        }).remove();
+        tr.exit().remove();
 
         td.text(function (d) {
           return d;
@@ -126,49 +94,110 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         td.exit().remove();
       }
     });
+  }
 
-    var sort = new Set();
-    var unsorted = null;
-    var doSort = function doSort() {
-      var sort_ = [].concat(_toConsumableArray(sort)).map(function (d) {
-        var dir = 'ascending';
-        d[0] === '-' && (d = d.slice(1)) && (dir = 'descending');
-        [].concat(_toConsumableArray(thead.querySelectorAll('th'))).forEach(function (c) {
+  /*
+  function defineDataAndSort(thead, tbody) {
+    let data = [];
+    Object.defineProperty(this, 'data', {
+      get: () => data,
+      set: (value) => {
+        let original = value;
+        let tr = d3.select(tbody)
+          .selectAll('tr')
+          .data(value);
+         let td = tr.enter()
+          .append('tr')
+          .merge(tr)
+          .each((d, i, trs) => {
+            Object.defineProperty(data, i, {
+              get: () => d.reduce((tds, d, j) => {
+                let td = trs[i].querySelectorAll('td')[j];
+                Object.defineProperty(tds, j, {
+                  get: () => {
+                    let v = td.textContent;
+                    if (Number(v).toString() === v) { return Number(v); }
+                    return v;
+                  },
+                  set: (value) => {
+                    if (unsorted) {
+                      unsorted[unsorted.findIndex(row => row.every(
+                        (item, j) => item === original[i][j])
+                      )][j] = value;
+                    } else {
+                      original[i][j] = value;
+                    }
+                    trs[i].querySelectorAll('td')[j];
+                    d3.select(td)
+                      .text(value);
+                  },
+                  configurable: true
+                });
+                return tds;
+              }, []),
+              set: (value) => {
+                if (unsorted) {
+                  unsorted[unsorted.findIndex(row => row.every(
+                    (item, j) => item === original[i][j])
+                  )] = value;
+                } else {
+                  original[i] = value;
+                }
+                d3.select(trs[i])
+                  .selectAll('td')
+                  .data(value)
+                  .text(d => d);
+              },
+              configurable: true
+            });
+          })
+          .selectAll('td')
+          .data(d => d);
+         tr.exit()
+          .each((d, i) => {
+            (data.length > i) && (data.length = i);
+          })
+          .remove();
+         td.text(d => d);
+         td.enter()
+          .append('td')
+          .merge(td)
+          .text(d => d);
+         td.exit()
+          .remove();
+      }
+    });
+     let sort = new Set();
+    let unsorted = null;
+    let doSort = () => {
+      let sort_ = [...sort].map((d) => {
+        let dir = 'ascending';
+        (d[0] === '-') && (d = d.slice(1)) && (dir = 'descending');
+        [...thead.querySelectorAll('th')].forEach(c => {
           if (c.textContent === d) {
-            dir === 'ascending' && c.classList.add('th--sort-asc');
-            dir === 'descending' && c.classList.add('th--sort-desc');
+            (dir === 'ascending' && c.classList.add('th--sort-asc'));
+            (dir === 'descending' && c.classList.add('th--sort-desc'));
           }
         });
         return {
-          i: [].concat(_toConsumableArray(_this2.columns)).indexOf(d),
+          i: [...this.columns].indexOf(d),
           dir: dir
         };
       });
       if (sort_.length > 0) {
-        !unsorted && (unsorted = data.map(function (d) {
-          return d.map(function (d) {
-            return d;
-          });
-        }));
-        _this2.data = unsorted.map(function (d) {
-          return d.map(function (d) {
-            return d;
-          });
-        }).sort(function (a, b) {
-          return sort_.reduce(function (r, d) {
-            if (r !== 0) {
-              return r;
-            }
+        (!unsorted) && (unsorted = data.map(d => d.map(d => d)));
+        this.data = unsorted.map(d => d.map(d => d)).sort((a, b) => {
+          return sort_.reduce((r, d) => {
+            if (r !== 0) { return r; }
             return d3[d.dir](a[d.i], b[d.i]);
           }, 0);
         });
       } else {
-        unsorted && (_this2.data = unsorted);
-        _this2.unsorted = null;
+        (unsorted) && (this.data = unsorted);
+        this.unsorted = null;
       }
     };
-
-    function modifySet() {
+     function modifySet() {
       sort.add = function add(value) {
         Set.prototype.add.call(this, value);
         doSort();
@@ -180,53 +209,45 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     }
     modifySet();
     Object.defineProperty(this, 'sort', {
-      get: function get() {
-        return sort;
-      },
-      set: function set(value) {
-        (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === _typeof('') && (sort = new Set(value.split(',').filter(function (d) {
-          return d.length;
-        })));
-        (Array.isArray(value) || value instanceof Set) && (sort = new Set(value));
+      get: () => sort,
+      set: (value) => {
+        typeof(value) === typeof('') &&
+          (sort = new Set(value.split(',').filter(d => d.length)));
+        ((Array.isArray(value)) || (value instanceof Set)) &&
+          (sort = new Set(value));
         modifySet();
         doSort();
       }
     });
   }
-
-  function defineFiltered(tbody) {
+   function defineFiltered(tbody) {
     Object.defineProperty(this, 'filtered', {
-      get: function get() {
-        return [].concat(_toConsumableArray(tbody.querySelectorAll('tr:not([hidden])'))).map(function (tr) {
-          return [].concat(_toConsumableArray(tr.querySelectorAll('td'))).map(function (td) {
-            var v = td.textContent;
-            if (Number(v).toString() === v) {
-              return Number(v);
-            }
+      get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
+        .map(tr => [...tr.querySelectorAll('td')]
+          .map(td => {
+            let v = td.textContent;
+            if (Number(v).toString() === v) { return Number(v); }
             return v;
-          });
-        });
-      }
+          }))
     });
   }
-
-  function defineFilter(tbody) {
-    var filter = '';
+   function defineFilter(tbody) {
+    let filter = '';
     Object.defineProperty(this, 'filter', {
-      get: function get() {
-        return filter;
-      },
-      set: function set(value) {
-        var filter_ = value.toLowerCase();
-        d3.select(tbody).selectAll('tr').each(function (d, i, trs) {
-          var includes = d.join().toLowerCase().includes(filter_);
-          includes && (trs[i].hidden = false);
-          !includes && (trs[i].hidden = true);
-        });
+      get: () => filter,
+      set: (value) => {
+        let filter_ = value.toLowerCase();
+        d3.select(tbody).selectAll('tr')
+          .each((d, i, trs) => {
+            let includes = d.join().toLowerCase().includes(filter_);
+            includes && (trs[i].hidden = false);
+            !includes && (trs[i].hidden = true);
+          });
         filter = value;
       }
     });
   }
+  */
 
   var HTMLTable3Element = Object.create(HTMLElement.prototype);
 
@@ -239,9 +260,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     !tbody && (tbody = table.appendChild(document.createElement('tbody')));
 
     defineColumns.call(this, thead);
-    defineDataAndSort.call(this, thead, tbody);
-    defineFilter.call(this, tbody);
-    defineFiltered.call(this, tbody);
+    defineData.call(this, tbody);
+    //defineDataAndSort.call(this, thead, tbody);
+    //defineFilter.call(this, tbody);
+    //defineFiltered.call(this, tbody);
 
     this._table = table;
   };

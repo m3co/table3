@@ -5,9 +5,9 @@ test(() => {
 
   assert_true(table3.columns instanceof Set, 'columns is present');
   assert_true(table3.data instanceof Array, 'data is present');
-  assert_true(table3.hasOwnProperty('filter'), 'filter is present');
-  assert_true(table3.hasOwnProperty('filtered'), 'filtered is present');
-  assert_true(table3.sort instanceof Set, 'sort is present');
+  //assert_true(table3.hasOwnProperty('filter'), 'filter is present');
+  //assert_true(table3.hasOwnProperty('filtered'), 'filtered is present');
+  //assert_true(table3.sort instanceof Set, 'sort is present');
 }, 'Table3 element has a defined API');
 
 test(() => {
@@ -100,19 +100,24 @@ test(() => {
 
   // [SETUP RUN]
   fixture = [[21, 22], [99, 99, 99]];
-  table3.data[1] = fixture[1];
+  table3.data = fixture;
+
   // [VERIFY]
   verify(table3, fixture);
+  assert_throws(null, () => {
+    table3.data[1] = fixture[1];
+  });
 
   fixture[1][2] = 88;
-  table3.data[1][2] = 88;
-  verify(table3, fixture);
+  assert_throws(null, () => {
+    table3.data[1][1] = 88;
+  });
 
   // [TEARDOWN]
   document.body.removeChild(table3);
-
 }, 'Render data');
 
+/*
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]
@@ -146,7 +151,7 @@ promise_test(function() {
 
     /*
      * Let's assume that I'm able to set the sort list in different ways
-     */
+     * /
     // [RUN-VERIFY]
     test(() => {
       table3.sort = ['-value', 'city'];
@@ -277,3 +282,4 @@ promise_test(function() {
 
   });
 }, 'Test change values and sort');
+*/

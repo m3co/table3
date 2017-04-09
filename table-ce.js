@@ -39,6 +39,53 @@
     });
   }
 
+  function defineData(tbody) {
+    var data = [];
+    Object.defineProperty(this, 'data', {
+      get: () => data,
+      set: (value) => {
+        data = value.reduce((data, row, i) => {
+          Object.defineProperty(data, i, {
+            get: () => value[i].reduce((data, row, j) => {
+              Object.defineProperty(data, j, {
+                get: () => value[i][j],
+                set: (value) => { throw new Error('row and col read only'); }
+              });
+              return data;
+            }, []),
+            set: (value) => { throw new Error('row read only'); }
+          });
+          return data;
+        }, []);
+
+
+        let tr = d3.select(tbody)
+          .selectAll('tr')
+          .data(value);
+
+        let td = tr.enter()
+          .append('tr')
+          .merge(tr)
+          .selectAll('td')
+          .data(d => d);
+
+        tr.exit()
+          .remove();
+
+        td.text(d => d);
+
+        td.enter()
+          .append('td')
+          .merge(td)
+          .text(d => d);
+
+        td.exit()
+          .remove();
+      }
+    });
+  }
+
+  /*
   function defineDataAndSort(thead, tbody) {
     let data = [];
     Object.defineProperty(this, 'data', {
@@ -198,6 +245,7 @@
       }
     });
   }
+  */
 
   class HTMLTable3Element extends HTMLElement {
     constructor() {
