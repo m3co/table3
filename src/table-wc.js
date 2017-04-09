@@ -13,7 +13,7 @@
 
     defineColumns.call(this, thead);
     defineData.call(this, tbody);
-    //defineDataAndSort.call(this, thead, tbody);
+    defineSort.call(this, thead, tbody);
     defineFilter.call(this, tbody);
     defineFiltered.call(this, tbody);
 

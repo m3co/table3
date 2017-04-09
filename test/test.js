@@ -139,19 +139,18 @@ promise_test(function() {
   });
 }, 'Filter data');
 
-/*
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]
     var table3 = document.createElement('x-table');
-    table3._table.hidden = true;
+    //table3._table.hidden = true;
 
     table3.columns = json.cols;
     table3.data = json.data.map(item => item.map(item => item));
 
     /*
      * Let's assume that I'm able to set the sort list in different ways
-     * /
+     */
     // [RUN-VERIFY]
     test(() => {
       table3.sort = ['-value', 'city'];
@@ -194,92 +193,13 @@ promise_test(function() {
         assert_equals(expected[1], actual[i][1]);
         assert_equals(expected[2], actual[i][2]);
       });
+      [...table3.querySelectorAll('thead th')].forEach(th => {
+        assert_false(th.classList.contains('th--sort-asc'));
+        assert_false(th.classList.contains('th--sort-desc'));
+      });
     }, 'Reset the sort list');
 
     // [TEARDOWN]
-    document.body.removeChild(table3);
+    //document.body.removeChild(table3);
   });
 }, 'Sort data');
-
-promise_test(function() {
-  return fetch('fixture1.json').then(response => response.json()).then(json => {
-    var table3 = document.createElement('x-table');
-    table3._table.hidden = true;
-
-    table3.columns = json.cols;
-    table3.data = json.data;
-
-    document.body.appendChild(table3);
-
-    test(() => {
-      // [RUN]
-      table3.data[1][1] = 'Schlutz';
-
-      // [VERIFY]
-      assert_equals(table3.data[1][1], 'Schlutz');
-      assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
-
-      table3.sort = 'city';
-      table3.sort = '';
-
-      // [VERIFY]
-      assert_equals(table3.data[1][1], 'Schlutz');
-      assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
-
-    }, 'Change data[i][j] and restore sort');
-
-    test(() => {
-      // [RUN]
-      var fixture = ['Hope', 'Hackermann', 33, '2016-06-08T16:43:46-07:00'];
-      table3.data[1] = fixture;
-
-      // [VERIFY]
-      fixture.forEach((item, i) => {
-        assert_equals(table3.data[1][i], item);
-        assert_equals(table3.data[1][i].toString(), table3.querySelectorAll('tr')[1].querySelectorAll('td')[i].textContent);
-      });
-
-      table3.sort = 'city';
-      table3.sort = '';
-
-      // [VERIFY]
-      fixture.forEach((item, i) => {
-        assert_equals(table3.data[1][i], item);
-        assert_equals(table3.data[1][i].toString(), table3.querySelectorAll('tr')[1].querySelectorAll('td')[i].textContent);
-      });
-
-    }, 'Change data[i] and restore sort');
-
-    test(() => {
-      // [RUN]
-      table3.sort = 'city';
-      table3.data[1][1] = 'Schlutz';
-      table3.sort = '';
-
-      // [VERIFY]
-      assert_equals(table3.data[1][1], 'Hackermann');
-      assert_equals(table3.data[32][1], 'Schlutz');
-      assert_equals(table3.data[1][1], table3.querySelectorAll('tr')[1].querySelectorAll('td')[1].textContent);
-
-    }, 'Do sort, change data[i][j] and restore sort');
-
-    test(() => {
-      // [RUN]
-      table3.sort = 'city';
-      var fixture = ['Hope', 'Hackermann', 33, '2016-06-08T16:43:46-07:00'];
-      table3.data[3] = fixture;
-      table3.sort = '';
-
-      // [VERIFY]
-      fixture.forEach((item, i) => {
-        assert_equals(table3.data[91][i], item);
-        assert_equals(table3.data[91][i].toString(), table3.querySelectorAll('tr')[91].querySelectorAll('td')[i].textContent);
-      });
-
-    }, 'Do sort, change data[i] and restore sort');
-
-    document.body.removeChild(table3);
-
-  });
-}, 'Test change values and sort');
-*/

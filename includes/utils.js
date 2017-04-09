@@ -17,16 +17,12 @@ function defineColumns(thead) {
           let sort;
           let th = d3.event.target;
           if (th.classList.contains('th--sort-asc')) {
-            th.classList.remove('th--sort-asc');
-            th.classList.add('th--sort-desc');
             sort = [...this.sort];
             sort[sort.indexOf(d)] = '-' + d;
             this.sort = sort;
           } else if (th.classList.contains('th--sort-desc')) {
-            th.classList.remove('th--sort-desc');
             this.sort.delete('-' + d);
           } else {
-            th.classList.add('th--sort-asc');
             this.sort.add(d);
           }
         });
@@ -82,83 +78,7 @@ function defineData(tbody) {
   });
 }
 
-/*
-function defineDataAndSort(thead, tbody) {
-  let data = [];
-  Object.defineProperty(this, 'data', {
-    get: () => data,
-    set: (value) => {
-      let original = value;
-      let tr = d3.select(tbody)
-        .selectAll('tr')
-        .data(value);
-
-      let td = tr.enter()
-        .append('tr')
-        .merge(tr)
-        .each((d, i, trs) => {
-          Object.defineProperty(data, i, {
-            get: () => d.reduce((tds, d, j) => {
-              let td = trs[i].querySelectorAll('td')[j];
-              Object.defineProperty(tds, j, {
-                get: () => {
-                  let v = td.textContent;
-                  if (Number(v).toString() === v) { return Number(v); }
-                  return v;
-                },
-                set: (value) => {
-                  if (unsorted) {
-                    unsorted[unsorted.findIndex(row => row.every(
-                      (item, j) => item === original[i][j])
-                    )][j] = value;
-                  } else {
-                    original[i][j] = value;
-                  }
-                  trs[i].querySelectorAll('td')[j];
-                  d3.select(td)
-                    .text(value);
-                },
-                configurable: true
-              });
-              return tds;
-            }, []),
-            set: (value) => {
-              if (unsorted) {
-                unsorted[unsorted.findIndex(row => row.every(
-                  (item, j) => item === original[i][j])
-                )] = value;
-              } else {
-                original[i] = value;
-              }
-              d3.select(trs[i])
-                .selectAll('td')
-                .data(value)
-                .text(d => d);
-            },
-            configurable: true
-          });
-        })
-        .selectAll('td')
-        .data(d => d);
-
-      tr.exit()
-        .each((d, i) => {
-          (data.length > i) && (data.length = i);
-        })
-        .remove();
-
-      td.text(d => d);
-
-      td.enter()
-        .append('td')
-        .merge(td)
-        .text(d => d);
-
-      td.exit()
-        .remove();
-    }
-  });
-
+function defineSort(thead, tbody) {
   let sort = new Set();
   let unsorted = null;
   let doSort = () => {
@@ -177,7 +97,7 @@ function defineDataAndSort(thead, tbody) {
       };
     });
     if (sort_.length > 0) {
-      (!unsorted) && (unsorted = data.map(d => d.map(d => d)));
+      (!unsorted) && (unsorted = this.data.map(d => d.map(d => d)));
       this.data = unsorted.map(d => d.map(d => d)).sort((a, b) => {
         return sort_.reduce((r, d) => {
           if (r !== 0) { return r; }
@@ -197,6 +117,13 @@ function defineDataAndSort(thead, tbody) {
     };
     sort.delete = function remove(value) {
       Set.prototype.delete.call(this, value);
+
+      [...thead.querySelectorAll('th')].forEach(c => {
+        if (value.toString().indexOf(c.textContent) > -1) {
+          c.classList.remove('th--sort-asc');
+          c.classList.remove('th--sort-desc');
+        }
+      });
       doSort();
     };
   }
@@ -209,11 +136,14 @@ function defineDataAndSort(thead, tbody) {
       ((Array.isArray(value)) || (value instanceof Set)) &&
         (sort = new Set(value));
       modifySet();
+      [...thead.querySelectorAll('th')].forEach(c => {
+        c.classList.remove('th--sort-asc');
+        c.classList.remove('th--sort-desc');
+      });
       doSort();
     }
   });
 }
-*/
 
 function defineFiltered(tbody) {
   Object.defineProperty(this, 'filtered', {
