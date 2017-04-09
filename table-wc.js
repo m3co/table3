@@ -61,14 +61,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   get: function get() {
                     return value[i][j];
                   },
-                  set: function set(value) {
+                  set: function set() {
                     throw new Error('row and col read only');
                   }
                 });
                 return data;
               }, []);
             },
-            set: function set(value) {
+            set: function set() {
               throw new Error('row read only');
             }
           });
@@ -220,34 +220,41 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }
     });
   }
-   function defineFiltered(tbody) {
+  */
+
+  function defineFiltered(tbody) {
     Object.defineProperty(this, 'filtered', {
-      get: () => [...tbody.querySelectorAll('tr:not([hidden])')]
-        .map(tr => [...tr.querySelectorAll('td')]
-          .map(td => {
-            let v = td.textContent;
-            if (Number(v).toString() === v) { return Number(v); }
+      get: function get() {
+        return [].concat(_toConsumableArray(tbody.querySelectorAll('tr:not([hidden])'))).map(function (tr) {
+          return [].concat(_toConsumableArray(tr.querySelectorAll('td'))).map(function (td) {
+            var v = td.textContent;
+            if (Number(v).toString() === v) {
+              return Number(v);
+            }
             return v;
-          }))
+          });
+        });
+      }
     });
   }
-   function defineFilter(tbody) {
-    let filter = '';
+
+  function defineFilter(tbody) {
+    var filter = '';
     Object.defineProperty(this, 'filter', {
-      get: () => filter,
-      set: (value) => {
-        let filter_ = value.toLowerCase();
-        d3.select(tbody).selectAll('tr')
-          .each((d, i, trs) => {
-            let includes = d.join().toLowerCase().includes(filter_);
-            includes && (trs[i].hidden = false);
-            !includes && (trs[i].hidden = true);
-          });
+      get: function get() {
+        return filter;
+      },
+      set: function set(value) {
+        var filter_ = value.toLowerCase();
+        d3.select(tbody).selectAll('tr').each(function (d, i, trs) {
+          var includes = d.join().toLowerCase().includes(filter_);
+          includes && (trs[i].hidden = false);
+          !includes && (trs[i].hidden = true);
+        });
         filter = value;
       }
     });
   }
-  */
 
   var HTMLTable3Element = Object.create(HTMLElement.prototype);
 
@@ -262,8 +269,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     defineColumns.call(this, thead);
     defineData.call(this, tbody);
     //defineDataAndSort.call(this, thead, tbody);
-    //defineFilter.call(this, tbody);
-    //defineFiltered.call(this, tbody);
+    defineFilter.call(this, tbody);
+    defineFiltered.call(this, tbody);
 
     this._table = table;
   };

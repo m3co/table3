@@ -117,7 +117,6 @@ test(() => {
   document.body.removeChild(table3);
 }, 'Render data');
 
-/*
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]
@@ -140,6 +139,7 @@ promise_test(function() {
   });
 }, 'Filter data');
 
+/*
 promise_test(function() {
   return fetch('fixture1.json').then(response => response.json()).then(json => {
     // [SETUP]

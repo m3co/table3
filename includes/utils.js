@@ -47,15 +47,14 @@ function defineData(tbody) {
           get: () => value[i].reduce((data, row, j) => {
             Object.defineProperty(data, j, {
               get: () => value[i][j],
-              set: (value) => { throw new Error('row and col read only'); }
+              set: () => { throw new Error('row and col read only'); }
             });
             return data;
           }, []),
-          set: (value) => { throw new Error('row read only'); }
+          set: () => { throw new Error('row read only'); }
         });
         return data;
       }, []);
-
 
       let tr = d3.select(tbody)
         .selectAll('tr')
@@ -214,6 +213,7 @@ function defineDataAndSort(thead, tbody) {
     }
   });
 }
+*/
 
 function defineFiltered(tbody) {
   Object.defineProperty(this, 'filtered', {
@@ -243,4 +243,3 @@ function defineFilter(tbody) {
     }
   });
 }
-*/
