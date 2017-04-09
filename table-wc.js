@@ -29,16 +29,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           var sort = void 0;
           var th = d3.event.target;
           if (th.classList.contains('th--sort-asc')) {
-            th.classList.remove('th--sort-asc');
-            th.classList.add('th--sort-desc');
             sort = [].concat(_toConsumableArray(_this.sort));
             sort[sort.indexOf(d)] = '-' + d;
             _this.sort = sort;
           } else if (th.classList.contains('th--sort-desc')) {
-            th.classList.remove('th--sort-desc');
             _this.sort.delete('-' + d);
           } else {
-            th.classList.add('th--sort-asc');
             _this.sort.add(d);
           }
         });
@@ -48,72 +44,42 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     });
   }
 
-  function defineDataAndSort(thead, tbody) {
-    var _this2 = this;
-
+  function defineData(tbody) {
     var data = [];
     Object.defineProperty(this, 'data', {
       get: function get() {
         return data;
       },
       set: function set(value) {
-        var original = value;
-        var tr = d3.select(tbody).selectAll('tr').data(value);
-
-        var td = tr.enter().append('tr').merge(tr).each(function (d, i, trs) {
+        data = value.reduce(function (data, row, i) {
           Object.defineProperty(data, i, {
             get: function get() {
-              return d.reduce(function (tds, d, j) {
-                var td = trs[i].querySelectorAll('td')[j];
-                Object.defineProperty(tds, j, {
+              return value[i].reduce(function (data, row, j) {
+                Object.defineProperty(data, j, {
                   get: function get() {
-                    var v = td.textContent;
-                    if (Number(v).toString() === v) {
-                      return Number(v);
-                    }
-                    return v;
+                    return value[i][j];
                   },
-                  set: function set(value) {
-                    if (unsorted) {
-                      unsorted[unsorted.findIndex(function (row) {
-                        return row.every(function (item, j) {
-                          return item === original[i][j];
-                        });
-                      })][j] = value;
-                    } else {
-                      original[i][j] = value;
-                    }
-                    trs[i].querySelectorAll('td')[j];
-                    d3.select(td).text(value);
-                  },
-                  configurable: true
+                  set: function set() {
+                    throw new Error('row and col read only');
+                  }
                 });
-                return tds;
+                return data;
               }, []);
             },
-            set: function set(value) {
-              if (unsorted) {
-                unsorted[unsorted.findIndex(function (row) {
-                  return row.every(function (item, j) {
-                    return item === original[i][j];
-                  });
-                })] = value;
-              } else {
-                original[i] = value;
-              }
-              d3.select(trs[i]).selectAll('td').data(value).text(function (d) {
-                return d;
-              });
-            },
-            configurable: true
+            set: function set() {
+              throw new Error('row read only');
+            }
           });
-        }).selectAll('td').data(function (d) {
+          return data;
+        }, []);
+
+        var tr = d3.select(tbody).selectAll('tr').data(value);
+
+        var td = tr.enter().append('tr').merge(tr).selectAll('td').data(function (d) {
           return d;
         });
 
-        tr.exit().each(function (d, i) {
-          data.length > i && (data.length = i);
-        }).remove();
+        tr.exit().remove();
 
         td.text(function (d) {
           return d;
@@ -126,6 +92,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         td.exit().remove();
       }
     });
+  }
+
+  function defineSort(thead, tbody) {
+    var _this2 = this;
 
     var sort = new Set();
     var unsorted = null;
@@ -145,7 +115,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         };
       });
       if (sort_.length > 0) {
-        !unsorted && (unsorted = data.map(function (d) {
+        !unsorted && (unsorted = _this2.data.map(function (d) {
           return d.map(function (d) {
             return d;
           });
@@ -175,6 +145,13 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       };
       sort.delete = function remove(value) {
         Set.prototype.delete.call(this, value);
+
+        [].concat(_toConsumableArray(thead.querySelectorAll('th'))).forEach(function (c) {
+          if (value.toString().indexOf(c.textContent) > -1) {
+            c.classList.remove('th--sort-asc');
+            c.classList.remove('th--sort-desc');
+          }
+        });
         doSort();
       };
     }
@@ -189,6 +166,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         })));
         (Array.isArray(value) || value instanceof Set) && (sort = new Set(value));
         modifySet();
+        [].concat(_toConsumableArray(thead.querySelectorAll('th'))).forEach(function (c) {
+          c.classList.remove('th--sort-asc');
+          c.classList.remove('th--sort-desc');
+        });
         doSort();
       }
     });
@@ -239,7 +220,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     !tbody && (tbody = table.appendChild(document.createElement('tbody')));
 
     defineColumns.call(this, thead);
-    defineDataAndSort.call(this, thead, tbody);
+    defineData.call(this, tbody);
+    defineSort.call(this, thead, tbody);
     defineFilter.call(this, tbody);
     defineFiltered.call(this, tbody);
 
