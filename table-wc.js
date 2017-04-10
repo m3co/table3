@@ -57,7 +57,21 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               return value[i].reduce(function (data, row, j) {
                 Object.defineProperty(data, j, {
                   get: function get() {
-                    return value[i][j];
+                    var v = value[i][j];
+                    var sv = v.toString();
+                    var nv = Number(v);
+                    if (nv.toString() === sv) {
+                      return nv;
+                    }
+                    var bv = Boolean(v);
+                    if (bv.toString() === sv) {
+                      return bv;
+                    }
+                    var dv = new Date(v);
+                    if (dv.toString() !== 'Invalid Date') {
+                      return dv;
+                    }
+                    return v;
                   },
                   set: function set() {
                     throw new Error('row and col read only');
@@ -94,7 +108,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     });
   }
 
-  function defineSort(thead, tbody) {
+  function defineSort(thead) {
     var _this2 = this;
 
     var sort = new Set();
@@ -115,11 +129,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         };
       });
       if (sort_.length > 0) {
-        !unsorted && (unsorted = _this2.data.map(function (d) {
-          return d.map(function (d) {
-            return d;
-          });
-        }));
+        !unsorted && (unsorted = _this2.data);
         _this2.data = unsorted.map(function (d) {
           return d.map(function (d) {
             return d;
@@ -221,7 +231,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
     defineColumns.call(this, thead);
     defineData.call(this, tbody);
-    defineSort.call(this, thead, tbody);
+    defineSort.call(this, thead);
     defineFilter.call(this, tbody);
     defineFiltered.call(this, tbody);
 

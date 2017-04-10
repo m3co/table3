@@ -42,7 +42,23 @@ function defineData(tbody) {
         Object.defineProperty(data, i, {
           get: () => value[i].reduce((data, row, j) => {
             Object.defineProperty(data, j, {
-              get: () => value[i][j],
+              get: () => {
+                var v = value[i][j];
+                var sv = v.toString();
+                var nv = Number(v);
+                if (nv.toString() === sv) {
+                  return nv;
+                }
+                var bv = Boolean(v);
+                if (bv.toString() === sv) {
+                  return bv;
+                }
+                var dv = new Date(v);
+                if (dv.toString() !== 'Invalid Date') {
+                  return dv;
+                }
+                return v;
+              },
               set: () => { throw new Error('row and col read only'); }
             });
             return data;
@@ -78,7 +94,7 @@ function defineData(tbody) {
   });
 }
 
-function defineSort(thead, tbody) {
+function defineSort(thead) {
   let sort = new Set();
   let unsorted = null;
   let doSort = () => {
@@ -97,7 +113,7 @@ function defineSort(thead, tbody) {
       };
     });
     if (sort_.length > 0) {
-      (!unsorted) && (unsorted = this.data.map(d => d.map(d => d)));
+      (!unsorted) && (unsorted = this.data);
       this.data = unsorted.map(d => d.map(d => d)).sort((a, b) => {
         return sort_.reduce((r, d) => {
           if (r !== 0) { return r; }
